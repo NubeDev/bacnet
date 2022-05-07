@@ -64,7 +64,7 @@ func readProp(cmd *cobra.Command, args []string) {
 	}
 	object := btypes.ObjectID{
 		Type:     8,
-		Instance: 1103,
+		Instance: btypes.ObjectInstance(deviceID),
 	}
 
 	dest := btypes.Device{

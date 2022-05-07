@@ -85,6 +85,7 @@ func readMulti(cmd *cobra.Command, args []string) {
 
 	fmt.Println("MaxApdu", dest.MaxApdu)
 
+	//get object list
 	rp = btypes.PropertyData{
 		Object: btypes.Object{
 			ID: btypes.ObjectID{
@@ -107,76 +108,66 @@ func readMulti(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	ids, ok := out.Object.Properties[0].Data.([]interface{})
-	if !ok {
-		fmt.Println("unable to get object list")
-		return
-	}
-	fmt.Println(len(ids), "LEN")
 	rpm := btypes.MultiplePropertyData{}
 
 	rpm.Objects = []btypes.Object{
 		btypes.Object{
 			ID: btypes.ObjectID{
-				Type:     8,
-				Instance: btypes.ObjectInstance(deviceID),
+				Type:     btypes.AnalogOutput,
+				Instance: 1,
 			},
 			Properties: []btypes.Property{
-				btypes.Property{
-					Type:       btypes.PropObjectList,
+				{
+					Type:       btypes.PropObjectName,
 					ArrayIndex: bacnet.ArrayAll,
 				},
 			},
 		},
 		btypes.Object{
 			ID: btypes.ObjectID{
-				Type:     8,
-				Instance: btypes.ObjectInstance(deviceID),
+				Type:     btypes.AnalogOutput,
+				Instance: 1,
 			},
 			Properties: []btypes.Property{
-				btypes.Property{
-					Type:       btypes.PropObjectList,
+				{
+					Type:       btypes.PropPresentValue,
+					ArrayIndex: bacnet.ArrayAll,
+				},
+			},
+		},
+		btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     btypes.AnalogOutput,
+				Instance: 2,
+			},
+			Properties: []btypes.Property{
+				{
+					Type:       btypes.PropObjectName,
+					ArrayIndex: bacnet.ArrayAll,
+				},
+			},
+		},
+		btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     btypes.AnalogOutput,
+				Instance: 2,
+			},
+			Properties: []btypes.Property{
+				{
+					Type:       btypes.PropPresentValue,
 					ArrayIndex: bacnet.ArrayAll,
 				},
 			},
 		},
 	}
 
+	//fmt.Println(rpm)
 	rpmRes, err := c.ReadMultiProperty(dest, rpm)
 	if err != nil {
 		log.Println(err)
 	}
 	fmt.Println(rpmRes)
 
-	//for i, objs := range ids {
-	//	id, ok := objs.(btypes.ObjectID)
-	//	if !ok {
-	//		log.Printf("unable to read object id %v\n", objs)
-	//		return
-	//	}
-	//
-	//	if id.Type == btypes.AnalogOutput {
-	//
-	//		props := []btypes.Property{
-	//			btypes.Property{
-	//				Type:       btypes.PropObjectName,
-	//				ArrayIndex: bacnet.ArrayAll,
-	//			},
-	//			btypes.Property{
-	//				Type:       btypes.PropDescription,
-	//				ArrayIndex: bacnet.ArrayAll,
-	//			},
-	//		}
-	//		rpm.Objects[i].Properties = append(rpm.Objects[i].Properties, props...)
-	//	}
-	//
-	//}
-	//fmt.Println(rpm)
-	//rpmRes, err := c.ReadMultiProperty(dest, rpm)
-	//if err != nil {
-	//	log.Println(err)
-	//}
-	//fmt.Println(rpmRes)
 }
 
 func init() {
