@@ -32,8 +32,13 @@ func main(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-
-	ids, err := c.WhoIs(startRange, endRange)
+	wh := &bacnet.WhoIsBuilder{
+		GlobalBroadcast: true,
+		NetworkNumber:   0,
+	}
+	wh.Low = startRange
+	wh.High = endRange
+	ids, err := c.WhoIs(wh)
 	if err != nil {
 		log.Fatal(err)
 	}

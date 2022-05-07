@@ -7,13 +7,28 @@ import (
 	"github.com/NubeDev/bacnet/encoding"
 )
 
+type WhoIsBuilder struct {
+	High            int
+	Low             int
+	GlobalBroadcast bool
+	NetworkNumber   int
+}
+
 // WhoIs finds all devices with ids between the provided low and high values.
 // Use constant ArrayAll for both fields to scan the entire network at once.
 // Using ArrayAll is highly discouraged for most networks since it can lead
 // to a high congested network.
-func (c *client) WhoIs(low, high int) ([]btypes.Device, error) {
+func (c *client) WhoIs(wh *WhoIsBuilder) ([]btypes.Device, error) {
 	dest := *c.dataLink.GetBroadcastAddress()
 	enc := encoding.NewEncoder()
+	low := wh.Low
+	high := wh.High
+
+	if wh.GlobalBroadcast {
+		wh.NetworkNumber = 0xFFFF //65535
+
+	}
+	dest.Net = uint16(wh.NetworkNumber)
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,
 		Destination:           &dest,

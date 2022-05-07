@@ -22,7 +22,7 @@ const forwardHeaderLength = 10
 type Client interface {
 	io.Closer
 	Run()
-	WhoIs(low, high int) ([]btypes.Device, error)
+	WhoIs(wh *WhoIsBuilder) ([]btypes.Device, error)
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
 	ReadMultiProperty(dev btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error)
@@ -186,7 +186,7 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int,
 		// SET UNICAST FLAG
 		header.Function = btypes.BacFuncUnicast
 	}
-	header.Function = btypes.BacFuncUnicast //TODO AIDAN had to set this to make it work over a network router
+	//header.Function = btypes.BacFuncUnicast //TODO AIDAN had to set this to make it work over a network router (whois on bacnet network will not work if this is set)
 	header.Length = uint16(mtuHeaderLength + len(data))
 	header.Data = data
 	e := encoding.NewEncoder()

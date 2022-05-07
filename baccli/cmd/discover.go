@@ -51,6 +51,8 @@ func discover(cmd *cobra.Command, args []string) {
 	log.Out = os.Stdout
 	log.SetLevel(logrus.DebugLevel)
 
+	wh := &bacnet.WhoIsBuilder{}
+
 	dataLink, err := datalink.NewUDPDataLink(Interface, Port)
 	if err != nil {
 		log.Fatal(err)
@@ -122,7 +124,9 @@ func discover(cmd *cobra.Command, args []string) {
 		startRange = i * incr
 		endRange = min((i+1)*incr-1, btypes.MaxInstance)
 		log.Infof("Scanning %d to %d", startRange, endRange)
-		scanned, err := c.WhoIs(startRange, endRange)
+		wh.Low = startRange
+		wh.High = startRange
+		scanned, err := c.WhoIs(wh)
 		if err != nil {
 			log.Error(err)
 			continue
