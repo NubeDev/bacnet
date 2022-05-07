@@ -5,9 +5,11 @@ import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/datalink"
+	"github.com/NubeDev/bacnet/helpers/data"
+	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 )
 
 // readMultiCmd represents the readMultiCmd command
@@ -35,81 +37,154 @@ func readMulti(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	wh := &bacnet.WhoIsOpts{}
-	wh.Low = startRange
-	wh.High = endRange
-	// We need the actual address of the device first.
-	resp, err := c.WhoIs(wh)
+
+	ip, err := ip2bytes.New(deviceIP, uint16(devicePort))
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	if len(resp) == 0 {
-		log.Fatal("Device id was not found on the network.")
+	addr := btypes.Address{
+		Net: uint16(networkNumber),
+		Mac: ip,
+		Adr: []uint8{uint8(deviceHardwareMac)},
 	}
 
-	for _, d := range resp {
-		dest := d
+	object := btypes.ObjectID{
+		Type:     btypes.DeviceType,
+		Instance: btypes.ObjectInstance(deviceID),
+	}
 
-		rp := btypes.PropertyData{
-			Object: btypes.Object{
-				ID: btypes.ObjectID{
-					Type:     8,
-					Instance: btypes.ObjectInstance(deviceID),
-				},
-				Properties: []btypes.Property{
-					btypes.Property{
-						Type:       btypes.PropObjectList,
-						ArrayIndex: bacnet.ArrayAll,
-					},
+	//get max adpu len
+	rp := btypes.PropertyData{
+		Object: btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     btypes.DeviceType,
+				Instance: btypes.ObjectInstance(deviceID),
+			},
+			Properties: []btypes.Property{
+				btypes.Property{
+					Type:       btypes.PropMaxAPDU,
+					ArrayIndex: bacnet.ArrayAll,
 				},
 			},
-		}
-
-		out, err := c.ReadProperty(dest, rp)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		ids, ok := out.Object.Properties[0].Data.([]interface{})
-		if !ok {
-			fmt.Println("unable to get object list")
-			return
-		}
-
-		rpm := btypes.MultiplePropertyData{}
-		rpm.Objects = make([]btypes.Object, len(ids))
-		for i, raw_id := range ids {
-			id, ok := raw_id.(btypes.ObjectID)
-			if !ok {
-				log.Printf("unable to read object id %v\n", raw_id)
-				return
-			}
-			rpm.Objects[i].ID = id
-
-			rpm.Objects[i].Properties = []btypes.Property{
-				btypes.Property{
-					Type:       btypes.PropObjectName,
-					ArrayIndex: bacnet.ArrayAll,
-				},
-				btypes.Property{
-					Type:       btypes.PropDescription,
-					ArrayIndex: bacnet.ArrayAll,
-				},
-			}
-		}
-
-		x, err := c.ReadMultiProperty(dest, rpm)
-		if err != nil {
-			log.Println(err)
-		}
-		fmt.Println(x)
+		},
 	}
+
+	dest := btypes.Device{
+		ID:   object,
+		Addr: addr,
+	}
+	// get the device MaxApdu
+	out, err := c.ReadProperty(dest, rp)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	_, dest.MaxApdu = data.ToUint32(out)
+
+	fmt.Println("MaxApdu", dest.MaxApdu)
+
+	rp = btypes.PropertyData{
+		Object: btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     8,
+				Instance: btypes.ObjectInstance(deviceID),
+			},
+			Properties: []btypes.Property{
+				btypes.Property{
+					Type:       btypes.PropObjectList,
+					ArrayIndex: bacnet.ArrayAll,
+				},
+			},
+		},
+	}
+
+	// get the device object list
+	out, err = c.ReadProperty(dest, rp)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	ids, ok := out.Object.Properties[0].Data.([]interface{})
+	if !ok {
+		fmt.Println("unable to get object list")
+		return
+	}
+	fmt.Println(len(ids), "LEN")
+	rpm := btypes.MultiplePropertyData{}
+
+	rpm.Objects = []btypes.Object{
+		btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     8,
+				Instance: btypes.ObjectInstance(deviceID),
+			},
+			Properties: []btypes.Property{
+				btypes.Property{
+					Type:       btypes.PropObjectList,
+					ArrayIndex: bacnet.ArrayAll,
+				},
+			},
+		},
+		btypes.Object{
+			ID: btypes.ObjectID{
+				Type:     8,
+				Instance: btypes.ObjectInstance(deviceID),
+			},
+			Properties: []btypes.Property{
+				btypes.Property{
+					Type:       btypes.PropObjectList,
+					ArrayIndex: bacnet.ArrayAll,
+				},
+			},
+		},
+	}
+
+	rpmRes, err := c.ReadMultiProperty(dest, rpm)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(rpmRes)
+
+	//for i, objs := range ids {
+	//	id, ok := objs.(btypes.ObjectID)
+	//	if !ok {
+	//		log.Printf("unable to read object id %v\n", objs)
+	//		return
+	//	}
+	//
+	//	if id.Type == btypes.AnalogOutput {
+	//
+	//		props := []btypes.Property{
+	//			btypes.Property{
+	//				Type:       btypes.PropObjectName,
+	//				ArrayIndex: bacnet.ArrayAll,
+	//			},
+	//			btypes.Property{
+	//				Type:       btypes.PropDescription,
+	//				ArrayIndex: bacnet.ArrayAll,
+	//			},
+	//		}
+	//		rpm.Objects[i].Properties = append(rpm.Objects[i].Properties, props...)
+	//	}
+	//
+	//}
+	//fmt.Println(rpm)
+	//rpmRes, err := c.ReadMultiProperty(dest, rpm)
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//fmt.Println(rpmRes)
 }
 
 func init() {
-	readCmd.AddCommand(readMultiCmd)
-	readMultiCmd.Flags().IntVarP(&startRange, "start", "s", -1, "Start range of discovery")
-	readMultiCmd.Flags().IntVarP(&endRange, "end", "e", int(0xBAC0), "End range of discovery")
+	RootCmd.AddCommand(readMultiCmd)
+	readMultiCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
+	readMultiCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
+	readMultiCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
+	readMultiCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")
+	readMultiCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")
 
 }

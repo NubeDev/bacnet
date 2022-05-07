@@ -56,6 +56,37 @@ go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1
 go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --network=4 --mstp=1 --objectID=1 --objectType=1 --property=85 
 ```
 
+get device name
+
+```
+go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --network=4 --mstp=1 --objectID=202 --objectType=8 --property=77
+```
+
+### Max APDU Length
+
+`Max APDU Length is important on for read/write prop multiple`
+
+In the variable "Max APDU Length Accepted" the following are the values that can be returned:
+
+```
+mstp device: 480
+ip device: 1476
+```
+
+### example same device getting the max APDU
+
+get device MaxApdu length over MSTP will return `480`
+
+```
+go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --network=4 --mstp=1 --objectID=202 --objectType=8 --property=62
+```
+
+get device MaxApdu length and on the same device but over IP will return `1476`
+
+```
+go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --network=0 --mstp=0 --objectID=202 --objectType=8 --property=62
+```
+
 ## Library
 
 - [x] Who Is
@@ -89,9 +120,10 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --ne
 
 - [x] Johnson Controls (FEC)
 - [x] Easy-IO 30p, tested over IP and ms-tp
-- [ ] Delta
+- [ ] Delta Controls
 - [ ] Reliable Controls
 - [x] Honeywell Spyder
+- [ ] Niagara N4 jace
 - [ ] Schneider
 
 ## tested with other bacnet-libs

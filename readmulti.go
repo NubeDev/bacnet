@@ -17,7 +17,7 @@ const maxReattempt = 2
 // good feature to read all present values of every object in the device. This
 // is a batch operation compared to a ReadProperty and should be used in place
 // when reading more than two objects/properties.
-func (c *client) ReadMultiProperty(dev btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error) {
+func (c *client) ReadMultiProperty(device btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error) {
 	var out btypes.MultiplePropertyData
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -27,10 +27,15 @@ func (c *client) ReadMultiProperty(dev btypes.Device, rp btypes.MultipleProperty
 		return out, fmt.Errorf("unable to get transaction id: %v", err)
 	}
 	defer c.tsm.Put(id)
+	device.Addr.SetLength()
+	err = device.CheckADPU()
+	if err != nil {
+		return btypes.MultiplePropertyData{}, err
+	}
 
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,
-		Destination:           &dev.Addr,
+		Destination:           &device.Addr,
 		Source:                c.dataLink.GetMyAddress(),
 		IsNetworkLayerMessage: false,
 		ExpectingReply:        true,
@@ -46,14 +51,14 @@ func (c *client) ReadMultiProperty(dev btypes.Device, rp btypes.MultipleProperty
 	}
 
 	pack := enc.Bytes()
-	if dev.MaxApdu < uint32(len(pack)) {
-		return out, fmt.Errorf("read multiple property is too large (max: %d given: %d)", dev.MaxApdu, len(pack))
+	if device.MaxApdu < uint32(len(pack)) {
+		return out, fmt.Errorf("read multiple property is too large (max: %d given: %d)", device.MaxApdu, len(pack))
 	}
 	// the value filled doesn't matter. it just needs to be non nil
 	err = fmt.Errorf("go")
 
 	for count := 0; err != nil && count < maxReattempt; count++ {
-		out, err = c.sendReadMultipleProperty(id, dev, npdu, pack)
+		out, err = c.sendReadMultipleProperty(id, device, npdu, pack)
 		if err == nil {
 			return out, nil
 		}

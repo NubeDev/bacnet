@@ -1,5 +1,9 @@
 package btypes
 
+import (
+	"fmt"
+)
+
 type Enumerated uint32
 
 type IAm struct {
@@ -12,12 +16,13 @@ type IAm struct {
 
 type Device struct {
 	ID           ObjectID
-	MaxApdu      uint32
+	MaxApdu      uint32 //maxApduLengthAccepted	62
 	Segmentation Enumerated
 	Vendor       uint32
 	Addr         Address
 	Objects      ObjectMap
-	IsTypeMSTP   bool
+	SupportsRPM  bool //support read prob multiple
+	SupportsWPM  bool //support read prob multiple
 }
 
 // ObjectSlice returns all the objects in the device as a slice (not thread-safe)
@@ -29,4 +34,14 @@ func (dev *Device) ObjectSlice() []Object {
 		}
 	}
 	return objs
+}
+
+//CheckADPU device max ADPU len (mstp can be > 480, and IP > 1476)
+func (dev *Device) CheckADPU() error {
+	errMsg := "device.CheckADPU() incorrect ADPU size:"
+	size := dev.MaxApdu
+	if size == 0 {
+		return fmt.Errorf("%s %d", errMsg, size)
+	}
+	return nil
 }

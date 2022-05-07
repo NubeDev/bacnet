@@ -71,8 +71,6 @@ func readProp(cmd *cobra.Command, args []string) {
 		ID:   object,
 		Addr: addr,
 	}
-	//ppp, err := btypes.Get(propertyType)
-	//fmt.Println(ppp, 9090)
 
 	var propInt btypes.PropertyType
 	// Check to see if an int was passed
@@ -97,7 +95,7 @@ func readProp(cmd *cobra.Command, args []string) {
 				Instance: btypes.ObjectInstance(objectID),
 			},
 			Properties: []btypes.Property{
-				btypes.Property{
+				{
 					Type:       propInt,
 					ArrayIndex: arrayIndex,
 				},
