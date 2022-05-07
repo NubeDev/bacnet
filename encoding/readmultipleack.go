@@ -79,7 +79,7 @@ func (d *Decoder) bacError(errorClass, errorCode *uint32) error {
 	case uint32:
 		*errorClass = val
 	default:
-		return fmt.Errorf("Receive bacnet error of unknown type")
+		return fmt.Errorf("receive bacnet error of unknown type")
 	}
 
 	data, err = d.AppData()
@@ -90,7 +90,7 @@ func (d *Decoder) bacError(errorClass, errorCode *uint32) error {
 	case uint32:
 		*errorCode = val
 	default:
-		return fmt.Errorf("Receive bacnet error of unknown type")
+		return fmt.Errorf("receive bacnet error of unknown type")
 	}
 	return nil
 }
@@ -178,7 +178,7 @@ func (d *Decoder) objectsWithData(objects *[]btypes.Object) error {
 						} else {
 							// TODO how to parse it in Context???
 							*objects = append(*objects, obj)
-							return nil
+							//return nil
 
 							lenValue := d.value(meta)
 							tag = tagTypeInContext(prop.Type, tag)
@@ -231,7 +231,7 @@ func (d *Decoder) objectsWithData(objects *[]btypes.Object) error {
 				if tag == 5 && meta.isClosing() {
 					//
 				}
-				return fmt.Errorf("Class %d Code %d", class, code)
+				return fmt.Errorf("class %d code %d", class, code)
 			} else {
 				return &ErrorIncorrectTag{Expected: 4, Given: tag}
 			}

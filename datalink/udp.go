@@ -19,28 +19,58 @@ type udpDataLink struct {
 	listener                    *net.UDPConn
 }
 
-func NewUDPDataLink(inter string, port int) (DataLink, error) {
+/*
+NewUDPDataLink returns udp listener
+pass in your iface port by name, see an alternative NewUDPDataLinkFromIP if you wish to pass in by ip and subnet
+	- inter: eth0
+	- addr: 47808
+*/
+func NewUDPDataLink(inter string, port int) (link DataLink, err error) {
+	if port == 0 {
+		port = DefaultPort
+	}
+	addr := inter
+	if !strings.ContainsRune(inter, '/') {
+		addr, err = FindCIDRAddress(inter)
+		if err != nil {
+			return nil, err
+		}
+	}
+	link, err = dataLink(addr, port)
+	if err != nil {
+		return nil, err
+	}
+	return link, nil
+}
+
+/*
+NewUDPDataLinkFromIP returns udp listener
+	- addr: 192.168.15.10
+	- subNet: 24
+	- addr: 47808
+*/
+func NewUDPDataLinkFromIP(addr string, subNet, port int) (link DataLink, err error) {
+	addr = fmt.Sprintf("%s/%d", addr, subNet)
+	link, err = dataLink(addr, port)
+	if err != nil {
+		return nil, err
+	}
+	return link, nil
+}
+
+func dataLink(ipAddr string, port int) (DataLink, error) {
 	if port == 0 {
 		port = DefaultPort
 	}
 
-	myCIDRAddress := inter
-	if !strings.ContainsRune(inter, '/') {
-		addr, err2 := FindCIDRAddress(inter)
-		if err2 != nil {
-			return nil, err2
-		}
-		myCIDRAddress = addr
-	}
-
-	ip, ipnet, err := net.ParseCIDR(myCIDRAddress)
+	ip, ipNet, err := net.ParseCIDR(ipAddr)
 	if err != nil {
 		return nil, err
 	}
 
 	broadcast := net.IP(make([]byte, 4))
 	for i := range broadcast {
-		broadcast[i] = ipnet.IP[i] | ^ipnet.Mask[i]
+		broadcast[i] = ipNet.IP[i] | ^ipNet.Mask[i]
 	}
 
 	udp, _ := net.ResolveUDPAddr("udp4", fmt.Sprintf(":%d", port))

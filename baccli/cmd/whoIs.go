@@ -25,7 +25,13 @@ var whoIsCmd = &cobra.Command{
 
 func main(cmd *cobra.Command, args []string) {
 
-	dataLink, err := datalink.NewUDPDataLink(Interface, Port)
+	//use NewUDPDataLinkFromIP if you want to pass in the IP
+	dataLink, err := datalink.NewUDPDataLinkFromIP("192.168.15.194", 24, Port)
+	if err != nil {
+		log.Fatal(err)
+	}
+	dataLink.Close()
+	dataLink, err = datalink.NewUDPDataLink(Interface, Port)
 	if err != nil {
 		log.Fatal(err)
 	}

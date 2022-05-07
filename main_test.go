@@ -60,7 +60,13 @@ func TestServices(t *testing.T) {
 }
 
 func testReadPropertyService(c Client, t *testing.T) {
-	dev, err := c.WhoIs(testServer, testServer)
+	wh := &WhoIsBuilder{
+		GlobalBroadcast: false,
+		NetworkNumber:   0,
+	}
+	wh.Low = testServer
+	wh.High = testServer
+	dev, err := c.WhoIs(wh)
 	read := btypes.PropertyData{
 		Object: btypes.Object{
 			ID: btypes.ObjectID{
@@ -87,7 +93,13 @@ func testReadPropertyService(c Client, t *testing.T) {
 }
 
 func testWhoIs(c Client, t *testing.T) {
-	dev, err := c.WhoIs(testServer-1, testServer+1)
+	wh := &WhoIsBuilder{
+		GlobalBroadcast: false,
+		NetworkNumber:   0,
+	}
+	wh.Low = testServer - 1
+	wh.High = testServer + 1
+	dev, err := c.WhoIs(wh)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,7 +113,13 @@ func testWhoIs(c Client, t *testing.T) {
 // ensure that the revert was successful
 func testWritePropertyService(c Client, t *testing.T) {
 	const targetName = "Hotdog"
-	dev, err := c.WhoIs(testServer, testServer)
+	wh := &WhoIsBuilder{
+		GlobalBroadcast: false,
+		NetworkNumber:   0,
+	}
+	wh.Low = testServer
+	wh.High = testServer
+	dev, err := c.WhoIs(wh)
 	wp := btypes.PropertyData{
 		Object: btypes.Object{
 			ID: btypes.ObjectID{
@@ -175,8 +193,13 @@ func TestDeviceClient(t *testing.T) {
 	}
 	c := NewClient(dataLink, 0)
 	go c.Run()
-
-	devs, err := c.WhoIs(-1, -1)
+	wh := &WhoIsBuilder{
+		GlobalBroadcast: false,
+		NetworkNumber:   0,
+	}
+	wh.Low = testServer - 1
+	wh.High = testServer - 1
+	devs, err := c.WhoIs(wh)
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -2,7 +2,7 @@ package encoding
 
 import "github.com/NubeDev/bacnet/btypes"
 
-// WriteProperty encodes a write property request
+// WriteProperty encodes a write request
 func (e *Encoder) WriteProperty(invokeID uint8, data btypes.PropertyData) error {
 	a := btypes.APDU{
 		DataType: btypes.ConfirmedServiceRequest,
@@ -27,7 +27,7 @@ func (e *Encoder) WriteProperty(invokeID uint8, data btypes.PropertyData) error 
 
 	tagID++
 
-	// Tag 4 - Optional priorty tag
+	// Tag 4 - Optional priority tag
 	// Priority set
 	if prop.Priority != btypes.Normal {
 		e.contextUnsigned(tagID, uint32(prop.Priority))
