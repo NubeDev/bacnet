@@ -5,6 +5,23 @@ import "fmt"
 type ObjectType uint16
 
 const (
+	TypeAnalogInput       = 0
+	TypeAnalogOutput      = 1
+	TypeAnalogValue       = 2
+	TypeBinaryInput       = 3
+	TypeBinaryOutput      = 4
+	TypeBinaryValue       = 5
+	TypeDeviceType        = 8
+	TypeFile              = 10
+	TypeMultiStateInput   = 13
+	TypeMultiStateOutput  = 14
+	TypeNotificationClass = 15
+	TypeMultiStateValue   = 19
+	TypeTrendLog          = 20
+	TypeCharacterString   = 40
+)
+
+const (
 	AnalogInput       ObjectType = 0
 	AnalogOutput      ObjectType = 1
 	AnalogValue       ObjectType = 2

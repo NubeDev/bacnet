@@ -1,34 +1,3 @@
-/*Copyright (C) 2017 Alex Beltran
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to:
-The Free Software Foundation, Inc.
-59 Temple Place - Suite 330
-Boston, MA  02111-1307, USA.
-
-As a special exception, if other files instantiate templates or
-use macros or inline functions from this file, or you compile
-this file and link it with other works to produce a work based
-on this file, this file does not by itself cause the resulting
-work to be covered by the GNU General Public License. However
-the source code for this file must still be made available in
-accordance with section (3) of the GNU General Public License.
-
-This exception does not invalidate any other reasons why a work
-based on this file might be covered by the GNU General Public
-License.
-*/
-
 package encoding
 
 import (
@@ -87,13 +56,12 @@ func (e *Encoder) closingTag(num uint8) {
 	e.tagNum(meta, num)
 }
 
-// pretags
+//tagNum pre-tags
 func (e *Encoder) tagNum(meta tagMeta, num uint8) {
 	t := uint8(meta)
 	if num <= 14 {
-		t |= (num << 4)
+		t |= num << 4
 		e.write(t)
-
 		// We don't have enough space so make it in a new byte
 	} else {
 		t |= 0xF0
@@ -124,7 +92,7 @@ func (e *Encoder) tag(tg tagInfo) {
 
 	// We have enough room to put it with the last value
 	if tg.ID <= 14 {
-		t |= (tg.ID << 4)
+		t |= tg.ID << 4
 		e.write(t)
 
 		// We don't have enough space so make it in a new byte
@@ -134,7 +102,7 @@ func (e *Encoder) tag(tg tagInfo) {
 		e.write(tg.ID)
 	}
 	if tg.Value > 4 {
-		// Depending on the length, we will either write it as an 8 bit, 32 bit, or 64 bit integer
+		// Depending on the length, we will either write it as an 8 bit, 32 bit, or 64-bit integer
 		if tg.Value <= 253 {
 			e.write(uint8(tg.Value))
 		} else if tg.Value <= 65535 {
@@ -160,8 +128,7 @@ func (e *Encoder) contextEnumerated(tagNumber uint8, value uint32) {
 }
 
 func (e *Encoder) contextUnsigned(tagNumber uint8, value uint32) {
-	len := valueLength(value)
-	e.tag(tagInfo{ID: tagNumber, Context: true, Value: uint32(len)})
+	e.tag(tagInfo{ID: tagNumber, Context: true, Value: uint32(valueLength(value))})
 	e.unsigned(value)
 }
 
@@ -198,9 +165,7 @@ func (e *Encoder) objects(objects []btypes.Object, write bool) error {
 		// Tag 1 - Opening Tag
 		tag = 1
 		e.openingTag(tag)
-
 		e.properties(obj.Properties, write)
-
 		// Tag 1 - Closing Tag
 		e.closingTag(tag)
 	}
@@ -225,12 +190,9 @@ func (e *Encoder) properties(properties []btypes.Property, write bool) error {
 			// Tag 2 - Opening Tag
 			tag = 2
 			e.openingTag(tag)
-
-			e.AppData(prop.Data)
-
+			e.AppData(prop.Data, false)
 			// Tag 2 - Closing Tag
 			e.closingTag(tag)
-
 			if prop.Priority != btypes.Normal {
 				e.contextUnsigned(tag, uint32(prop.Priority))
 			}

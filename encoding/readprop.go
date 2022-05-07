@@ -72,7 +72,7 @@ func (e *Encoder) ReadPropertyAck(invokeID uint8, data btypes.PropertyData) erro
 	e.openingTag(tagID)
 	tagID++
 	prop := data.Object.Properties[0]
-	e.AppData(prop.Data)
+	e.AppData(prop.Data, false)
 	e.closingTag(tagID)
 	return e.Error()
 }

@@ -161,7 +161,6 @@ func (n *NPDUMetadata) SetSource(b bool) {
 	n.setInfoMask(b, maskSource)
 }
 
-// IsNetworkLayerMessage returns true if it is a network layer message
 func (n *NPDUMetadata) ExpectingReply() bool {
 	return n.checkMask(maskExpectingReply)
 }

@@ -176,7 +176,35 @@ func (d *Decoder) double(x *float64) {
 	d.decode(x)
 }
 
-func (e *Encoder) AppData(i interface{}) error {
+func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
+	fmt.Println("IN HERE AppData")
+	//if null used for sending null on point write to prop 87
+	switch i.(type) {
+	case btypes.Null:
+		fmt.Println("IN HERE btypes.Null")
+		e.tag(tagInfo{ID: tagNull, Context: appLayerContext})
+		return nil
+	}
+
+	//if point type is a BO or BV then set the type to type enum (data type 9)
+	if typeBVBO {
+		v := i.(uint32)
+		v, ok := i.(uint32)
+		if ok {
+			fmt.Println("IN HERE typeBVBO")
+			length := valueLength(v)
+			e.tag(tagInfo{ID: tagEnumerated, Context: appLayerContext, Value: uint32(length)})
+			e.enumerated(v)
+			return nil
+		} else {
+			err := fmt.Errorf("error in type convertion for boolean output or boolean value %T", i)
+			// Set global error
+			e.err = err
+			return err
+		}
+
+	}
+
 	switch val := i.(type) {
 	case float32:
 		e.tag(tagInfo{ID: tagReal, Context: appLayerContext, Value: realLen})
@@ -191,9 +219,8 @@ func (e *Encoder) AppData(i interface{}) error {
 		e.tag(tagInfo{ID: tagCharacterString, Context: appLayerContext, Value: uint32(len(val) + 1)})
 		e.string(val)
 	case uint32:
-		//AIDAN changed TAG from  tagUint to tagEnumerated to get BO, BVs working
 		length := valueLength(val)
-		e.tag(tagInfo{ID: tagEnumerated, Context: appLayerContext, Value: uint32(length)})
+		e.tag(tagInfo{ID: tagUint, Context: appLayerContext, Value: uint32(length)})
 		e.unsigned(val)
 	case int32:
 		v := uint32(val)
@@ -209,10 +236,8 @@ func (e *Encoder) AppData(i interface{}) error {
 	case btypes.ObjectID:
 		e.tag(tagInfo{ID: tagObjectID, Context: appLayerContext, Value: objectIDLen})
 		e.objectId(val.Type, val.Instance)
-
 	case btypes.Null:
 		e.tag(tagInfo{ID: tagNull, Context: appLayerContext})
-
 	default:
 		err := fmt.Errorf("Unknown type %T", i)
 		// Set global error

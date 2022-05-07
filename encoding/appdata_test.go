@@ -81,7 +81,7 @@ func generalSimpleDatabtypes(t *testing.T, generic bool) func(t *testing.T) {
 		if generic {
 			values := []interface{}{real, double, boolean, !boolean, small, medium, wtf, large, str, objID}
 			for _, v := range values {
-				enc.AppData(v)
+				enc.AppData(v, false)
 			}
 
 		} else {
@@ -184,7 +184,7 @@ func TestPropertyList(t *testing.T) {
 func TestStringUnicode(t *testing.T) {
 	s := "there is there such thing as too much pizza?"
 	enc := NewEncoder()
-	enc.AppData(s)
+	enc.AppData(s, false)
 
 	dec := NewDecoder(enc.Bytes())
 	out, err := dec.AppData()

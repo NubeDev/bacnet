@@ -36,10 +36,10 @@ import (
 )
 
 func (enc *Encoder) IAm(id btypes.IAm) error {
-	enc.AppData(id.ID)
-	enc.AppData(id.MaxApdu)
-	enc.AppData(id.Segmentation)
-	enc.AppData(id.Vendor)
+	enc.AppData(id.ID, false)
+	enc.AppData(id.MaxApdu, false)
+	enc.AppData(id.Segmentation, false)
+	enc.AppData(id.Vendor, false)
 	return enc.Error()
 }
 
