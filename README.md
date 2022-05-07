@@ -83,15 +83,15 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --ne
 
 - [x] Johnson Controls (FEC)
 - [x] Easy-IO 30p, tested over IP and mst-tp
-- [] Delta
-- [] Reliable Controls
+- [ ] Delta
+- [ ] Reliable Controls
 - [x] Honeywell Spyder
-- [] Schneider
+- [ ] Schneider
 
 ## tested with other bacnet-libs
 
 - [x] bacnet-stack
-- [] bacnet-4j
+- [ ] bacnet-4j
 - [x] bacpypes
 
 This library is heavily based on the BACnet-Stack library originally written by Steve Karg.
