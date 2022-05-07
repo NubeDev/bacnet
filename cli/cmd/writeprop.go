@@ -5,6 +5,7 @@ import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/datalink"
+	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -43,6 +44,10 @@ func init() {
 
 	// Pass flags to children
 	writeCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
+	writeCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
+	writeCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
+	writeCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")
+	writeCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")
 	writeCmd.Flags().IntVarP(&objectID, "objectID", "o", 1234, "object ID")
 	writeCmd.Flags().IntVarP(&objectType, "objectType", "j", 8, "object type")
 	writeCmd.Flags().StringVarP(&propertyType, "property", "t",
@@ -72,20 +77,26 @@ func writeProp(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	wh := &bacnet.WhoIsOpts{}
-	wh.Low = startRange
-	wh.High = endRange
-	// We need the actual address of the device first.
-	resp, err := c.WhoIs(wh)
+
+	ip, err := ip2bytes.New(deviceIP, uint16(devicePort))
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	if len(resp) == 0 {
-		log.Fatal("Device id was not found on the network.")
+	addr := btypes.Address{
+		Net: uint16(networkNumber),
+		Mac: ip,
+		Adr: []uint8{uint8(deviceHardwareMac)},
 	}
-	fmt.Println(resp[0])
-	dest := resp[0]
+	object := btypes.ObjectID{
+		Type:     8,
+		Instance: 1103,
+	}
+
+	dest := btypes.Device{
+		ID:   object,
+		Addr: addr,
+	}
 
 	var propInt btypes.PropertyType
 	// Check to see if an int was passed

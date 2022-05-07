@@ -24,6 +24,14 @@ func (a *Address) IsBroadcast() bool {
 	return false
 }
 
+//SetLength if device is of type ms-tp then set address len to 1
+func (a *Address) SetLength() {
+	if len(a.Adr) > 0 {
+		a.Len = 1
+	}
+	return
+}
+
 func (a *Address) SetBroadcast(b bool) {
 	if b {
 		a.MacLen = 0

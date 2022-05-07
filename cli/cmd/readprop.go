@@ -61,7 +61,6 @@ func readProp(cmd *cobra.Command, args []string) {
 		Net: uint16(networkNumber),
 		Mac: ip,
 		Adr: []uint8{uint8(deviceHardwareMac)},
-		Len: 1,
 	}
 	object := btypes.ObjectID{
 		Type:     8,
@@ -128,7 +127,7 @@ func init() {
 
 	// Pass flags to children
 	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
-	readCmd.Flags().StringVarP(&deviceIP, "address", "z", "192.168.15.202", "device ip")
+	readCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
 	readCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
 	readCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")
 	readCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")

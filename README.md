@@ -4,11 +4,17 @@ bacnet is a client for bacnet written in go.
 
 # Installation
 
+learn some `golang` if you don't know it first :)
+
+```
+go mod tidy
+```
+
 For usage run:
 
 ```
 go mod tidy
-cd baccli
+cd cli
 go run baccli --help
 ```
 
@@ -31,13 +37,13 @@ go run main.go read --interface=wlp3s0 --device=202 --objectID=1 --objectType=1 
 ### write to an AO
 
 ```
-go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1 --property=85 --priority=1 --null=true
+go run main.go write --interface=wlp3s0 --device=202 --address=192.168.15.20 --network=4 --mstp=1 --objectID=1 --objectType=1 --property=85 --priority=16 --value=21
 ```
 
 ### write null to @16
 
 ```
-go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1 --property=85 --priority=1 --null=true
+go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1 --property=85 --priority=16 --null=true
 ```
 
 ## over a bacnet to ms-tp network
@@ -82,7 +88,7 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --ne
 ## Tested on devices
 
 - [x] Johnson Controls (FEC)
-- [x] Easy-IO 30p, tested over IP and mst-tp
+- [x] Easy-IO 30p, tested over IP and ms-tp
 - [ ] Delta
 - [ ] Reliable Controls
 - [x] Honeywell Spyder

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/NubeDev/bacnet/baccli/cmd"
+import "github.com/NubeDev/bacnet/cli/cmd"
 
 func main() {
 	cmd.Execute()

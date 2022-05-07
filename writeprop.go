@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (c *client) WriteProperty(dest btypes.Device, wp btypes.PropertyData) error {
+func (c *client) WriteProperty(device btypes.Device, wp btypes.PropertyData) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	id, err := c.tsm.ID(ctx)
@@ -16,10 +16,10 @@ func (c *client) WriteProperty(dest btypes.Device, wp btypes.PropertyData) error
 		return fmt.Errorf("unable to get an transaction id: %v", err)
 	}
 	defer c.tsm.Put(id)
-
+	device.Addr.SetLength()
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,
-		Destination:           &dest.Addr,
+		Destination:           &device.Addr,
 		Source:                c.dataLink.GetMyAddress(),
 		IsNetworkLayerMessage: false,
 		ExpectingReply:        true,
@@ -39,7 +39,7 @@ func (c *client) WriteProperty(dest btypes.Device, wp btypes.PropertyData) error
 	for count := 0; err != nil && count < 2; count++ {
 		var b []byte
 		var raw interface{}
-		_, err = c.Send(dest.Addr, npdu, enc.Bytes())
+		_, err = c.Send(device.Addr, npdu, enc.Bytes())
 		if err != nil {
 			continue
 		}

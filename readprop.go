@@ -10,7 +10,7 @@ import (
 )
 
 // ReadProperty reads a single property from a single object in the given device.
-func (c *client) ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error) {
+func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	id, err := c.tsm.ID(ctx)
@@ -19,9 +19,10 @@ func (c *client) ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btype
 	}
 	defer c.tsm.Put(id)
 	enc := encoding.NewEncoder()
+	device.Addr.SetLength()
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,
-		Destination:           &dest.Addr,
+		Destination:           &device.Addr,
 		Source:                c.dataLink.GetMyAddress(),
 		IsNetworkLayerMessage: false,
 		ExpectingReply:        true,
@@ -40,7 +41,7 @@ func (c *client) ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btype
 	for count := 0; err != nil && count < 2; count++ {
 		var b []byte
 		var out btypes.PropertyData
-		_, err = c.Send(dest.Addr, npdu, enc.Bytes())
+		_, err = c.Send(device.Addr, npdu, enc.Bytes())
 		if err != nil {
 			log.Print(err)
 			continue
