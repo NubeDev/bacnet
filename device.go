@@ -22,7 +22,7 @@ const forwardHeaderLength = 10
 type Client interface {
 	io.Closer
 	Run()
-	WhoIs(wh *WhoIsBuilder) ([]btypes.Device, error)
+	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
 	ReadMultiProperty(dev btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error)
@@ -39,7 +39,6 @@ type client struct {
 }
 
 // NewClient creates a new client with the given interface and
-// port.
 func NewClient(dataLink datalink.DataLink, maxPDU uint16) Client {
 	if maxPDU == 0 {
 		maxPDU = btypes.MaxAPDU
@@ -100,8 +99,7 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 			return
 		}
 
-		// We want to keep the APDU intact so we will get a snapshot before decoding
-		// further
+		// We want to keep the APDU intact, so we will get a snapshot before decoding
 		send := dec.Bytes()
 		err = dec.APDU(&apdu)
 		if err != nil {
@@ -175,18 +173,21 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 // Send transfers the raw apdu byte slice to the destination address.
 func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int, error) {
 	var header btypes.BVLC
-
 	// Set packet type
 	header.Type = btypes.BVLCTypeBacnetIP
-
-	if dest.IsBroadcast() || dest.IsSubBroadcast() {
+	//if Adr is > 0 it must be an mst-tp device so send a UNICAST
+	if len(dest.Adr) > 0 { //(aidan) not sure if this is correct, but it needs to be set to work to send (UNICAST) messages over a bacnet network
+		// SET UNICAST FLAG
+		// see http://www.bacnet.org/Tutorial/HMN-Overview/sld033.
+		// see https://github.com/JoelBender/bacpypes/blob/9fca3f608a97a20807cd188689a2b9ff60b05085/doc/source/gettingstarted/gettingstarted001.rst#udp-communications-issues
+		header.Function = btypes.BacFuncUnicast
+	} else if dest.IsBroadcast() || dest.IsSubBroadcast() {
 		// SET BROADCAST FLAG
 		header.Function = btypes.BacFuncBroadcast
 	} else {
 		// SET UNICAST FLAG
 		header.Function = btypes.BacFuncUnicast
 	}
-	//header.Function = btypes.BacFuncUnicast //TODO AIDAN had to set this to make it work over a network router (whois on bacnet network will not work if this is set)
 	header.Length = uint16(mtuHeaderLength + len(data))
 	header.Data = data
 	e := encoding.NewEncoder()

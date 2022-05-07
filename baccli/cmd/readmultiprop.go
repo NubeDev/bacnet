@@ -2,14 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/NubeDev/bacnet/datalink"
-	"log"
-
-	"github.com/spf13/viper"
-
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/datalink"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"log"
 )
 
 // readMultiCmd represents the readMultiCmd command
@@ -37,7 +35,7 @@ func readMulti(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	wh := &bacnet.WhoIsBuilder{}
+	wh := &bacnet.WhoIsOpts{}
 	wh.Low = startRange
 	wh.High = endRange
 	// We need the actual address of the device first.

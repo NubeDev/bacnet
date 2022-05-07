@@ -6,7 +6,7 @@ const defaultMTSPMAC = 127
 
 // General Bacnet
 const defaultMaxMaster = 127
-const defautlMaxInfoFrames = 1
+const defaultMaxInfoFrames = 1
 
 // ArrayAll is used when reading/writing to a property to read/write the entire
 // array

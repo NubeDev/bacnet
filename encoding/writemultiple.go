@@ -2,7 +2,7 @@ package encoding
 
 import "github.com/NubeDev/bacnet/btypes"
 
-// WriteMultiProperty encodes a write property request
+// WriteMultiProperty encodes a writes property request
 func (e *Encoder) WriteMultiProperty(invokeID uint8, data btypes.MultiplePropertyData) error {
 	a := btypes.APDU{
 		DataType: btypes.ConfirmedServiceRequest,

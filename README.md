@@ -40,6 +40,16 @@ go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1
 go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1 --property=85 --priority=1 --null=true
 ```
 
+## over a bacnet to ms-tp network
+
+- router ip: 192.168.15.20
+- bacnet router network number: 4
+- bacnet mstp(rs485) mac address (between 0-255): 1
+
+```
+go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.20 --network=4 --mstp=1 --objectID=1 --objectType=1 --property=85 
+```
+
 ## Library
 
 - [x] Who Is
@@ -67,8 +77,24 @@ go run main.go write --interface=wlp3s0 --device=202 --objectID=1 --objectType=1
 - [ ] Atomic Read File
 - [ ] Atomic Write File
 
-# License
+# testing
+
+## Tested on devices
+
+- [x] Johnson Controls (FEC)
+- [x] Easy-IO 30p, tested over IP and mst-tp
+- [] Delta
+- [] Reliable Controls
+- [x] Honeywell Spyder
+- [] Schneider
+
+## tested with other bacnet-libs
+
+- [x] bacnet-stack
+- [] bacnet-4j
+- [x] bacpypes
 
 This library is heavily based on the BACnet-Stack library originally written by Steve Karg.
-And forked from https://github.com/alexbeltran/gobacnet
-And ideas from https://github.com/noahtkeller/go-bacnet
+
+- Ported and all credit to alex from https://github.com/alexbeltran/gobacnet
+- And ideas from https://github.com/noahtkeller/go-bacnet

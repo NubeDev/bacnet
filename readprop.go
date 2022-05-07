@@ -18,20 +18,6 @@ func (c *client) ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btype
 		return btypes.PropertyData{}, fmt.Errorf("unable to get an transaction id: %v", err)
 	}
 	defer c.tsm.Put(id)
-	fmt.Println("------")
-	fmt.Println("NET", dest.Addr.Net)
-	fmt.Println("MAC", dest.Addr.Mac)
-	//dest.Addr.Mac = []uint8{0004}
-
-	fmt.Println("MAC", dest.Addr.Mac)
-	fmt.Println("MacLen", dest.Addr.MacLen)
-	fmt.Println("Source", c.dataLink.GetMyAddress())
-	fmt.Println("------")
-	//dest.Addr.Adr = []byte{4}
-	//dest.Addr.Adr = []uint8{4}
-	//dest.Addr.Net = 4
-	//dest.Addr.MacLen = 1
-	fmt.Println(dest.Addr.Net)
 	enc := encoding.NewEncoder()
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,

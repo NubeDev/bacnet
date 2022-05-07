@@ -10,9 +10,10 @@ type Address struct {
 	Len    uint8
 	MacLen uint8   // mac len 0 is a broadcast address
 	Mac    []uint8 //note: MAC for IP addresses uses 4 bytes for addr, 2 bytes for port
-	Adr    []uint8 // hwaddr (MAC) address
+	Adr    []uint8 // hardware addr (MAC) address of ms-tp devices
 }
 
+const GlobalBroadcast uint16 = 0xFFFF
 const broadcastNetwork uint16 = 0xFFFF
 
 // IsBroadcast returns if the address is a broadcast address
@@ -48,13 +49,13 @@ func (a *Address) IsUnicast() bool {
 	return false
 }
 
-// UDPAddr parses the mac address and returns an proper net.UDPAddr
+// UDPAddr parses the mac address and returns a proper net.UDPAddr
 func (a *Address) UDPAddr() (net.UDPAddr, error) {
 	if len(a.Mac) != 6 {
-		return net.UDPAddr{}, fmt.Errorf("Mac is too short at %d", len(a.Mac))
+		return net.UDPAddr{}, fmt.Errorf("mac is too short at %d", len(a.Mac))
 	}
 	port := uint(a.Mac[4])<<8 | uint(a.Mac[5])
-	ip := net.IPv4(byte(a.Mac[0]), byte(a.Mac[1]), byte(a.Mac[2]), byte(a.Mac[3]))
+	ip := net.IPv4(a.Mac[0], a.Mac[1], a.Mac[2], a.Mac[3])
 	return net.UDPAddr{
 		IP:   ip,
 		Port: int(port),

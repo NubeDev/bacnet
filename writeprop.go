@@ -3,10 +3,9 @@ package bacnet
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/encoding"
+	"time"
 )
 
 func (c *client) WriteProperty(dest btypes.Device, wp btypes.PropertyData) error {

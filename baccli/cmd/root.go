@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/NubeDev/bacnet/helpers/homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"

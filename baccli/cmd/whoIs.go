@@ -38,7 +38,7 @@ func main(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	wh := &bacnet.WhoIsBuilder{
+	wh := &bacnet.WhoIsOpts{
 		GlobalBroadcast: true,
 		NetworkNumber:   0,
 	}

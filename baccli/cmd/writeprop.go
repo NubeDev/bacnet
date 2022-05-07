@@ -72,7 +72,7 @@ func writeProp(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	wh := &bacnet.WhoIsBuilder{}
+	wh := &bacnet.WhoIsOpts{}
 	wh.Low = startRange
 	wh.High = endRange
 	// We need the actual address of the device first.

@@ -2,26 +2,28 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/NubeDev/bacnet/datalink"
-	"strconv"
-
-	"github.com/spf13/viper"
-
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	"github.com/spf13/cobra"
-
+	"github.com/NubeDev/bacnet/datalink"
+	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"strconv"
 )
 
 // Flags
 var (
-	deviceID       int
-	objectID       int
-	objectType     int
-	arrayIndex     uint32
-	propertyType   string
-	listProperties bool
+	networkNumber     int
+	deviceID          int
+	deviceIP          string
+	devicePort        int
+	deviceHardwareMac int
+	objectID          int
+	objectType        int
+	arrayIndex        uint32
+	propertyType      string
+	listProperties    bool
 )
 
 // readCmd represents the read command
@@ -42,7 +44,6 @@ func readProp(cmd *cobra.Command, args []string) {
 		btypes.PrintAllProperties()
 		return
 	}
-
 	dataLink, err := datalink.NewUDPDataLink(viper.GetString("interface"), viper.GetInt("port"))
 	if err != nil {
 		log.Fatal(err)
@@ -50,36 +51,16 @@ func readProp(cmd *cobra.Command, args []string) {
 	c := bacnet.NewClient(dataLink, 0)
 	defer c.Close()
 	go c.Run()
-	//raddr := net.TCPAddr{IP: net.IPv4(151, 101, 1, 69), Port: int(80)}
-	// We need the actual address of the device first.
-	//resp, err := c.WhoIs(deviceID, deviceID)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	////
-	////if len(resp) == 0 {
-	////	log.Fatal("Device id was not found on the network.")
-	////}
-	//
-	//dest := resp[0]
-	//dest.Addr.Adr = []byte{4}
-	//dest.Addr.Adr = []uint8{4}
-	//addr := btypes.Address{
-	//	Net: 4,
-	//	Mac: []uint8{192, 168, 15, 20, 186, 192},
-	//	Adr: []uint8{4},
-	//	Len: 1,
-	//}
 
-	//TODO to get build mac address for network IP:port
-	dlink, _ := datalink.NewUDPDataLink(Interface, 47899)
-	fmt.Println(dlink.GetMyAddress())
-	fmt.Println(Interface)
+	ip, err := ip2bytes.New(deviceIP, uint16(devicePort))
+	if err != nil {
+		return
+	}
 
 	addr := btypes.Address{
-		Net: 4,
-		Mac: []uint8{192, 168, 15, 20, 186, 192},
-		Adr: []uint8{4},
+		Net: uint16(networkNumber),
+		Mac: ip,
+		Adr: []uint8{uint8(deviceHardwareMac)},
 		Len: 1,
 	}
 	object := btypes.ObjectID{
@@ -147,6 +128,10 @@ func init() {
 
 	// Pass flags to children
 	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
+	readCmd.Flags().StringVarP(&deviceIP, "address", "z", "192.168.15.202", "device ip")
+	readCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
+	readCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")
+	readCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")
 	readCmd.Flags().IntVarP(&objectID, "objectID", "o", 1234, "object ID")
 	readCmd.Flags().IntVarP(&objectType, "objectType", "j", 8, "object type")
 	readCmd.Flags().StringVarP(&propertyType, "property", "t",

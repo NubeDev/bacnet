@@ -22,15 +22,15 @@ func (e *Encoder) APDU(a btypes.APDU) error {
 	case btypes.ConfirmedServiceRequest:
 		e.apduConfirmed(a)
 	case btypes.SegmentAck:
-		return fmt.Errorf("Decoded Segmented")
+		return fmt.Errorf("decoded Segmented")
 	case btypes.Error:
-		return fmt.Errorf("Decoded Error")
+		return fmt.Errorf("decoded Error")
 	case btypes.Reject:
-		return fmt.Errorf("Decoded Rejected")
+		return fmt.Errorf("decoded Rejected")
 	case btypes.Abort:
-		return fmt.Errorf("Decoded Aborted")
+		return fmt.Errorf("decoded Aborted")
 	default:
-		return fmt.Errorf("Unknown PDU type: %d", meta.DataType())
+		return fmt.Errorf("unknown PDU type: %d", meta.DataType())
 	}
 	return nil
 }

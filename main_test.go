@@ -3,12 +3,11 @@ package bacnet
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/datalink"
 	"github.com/NubeDev/bacnet/encoding"
 	"log"
 	"testing"
-
-	"github.com/NubeDev/bacnet/btypes"
 )
 
 const interfaceName = "eth0"
@@ -60,7 +59,7 @@ func TestServices(t *testing.T) {
 }
 
 func testReadPropertyService(c Client, t *testing.T) {
-	wh := &WhoIsBuilder{
+	wh := &WhoIsOpts{
 		GlobalBroadcast: false,
 		NetworkNumber:   0,
 	}
@@ -93,7 +92,7 @@ func testReadPropertyService(c Client, t *testing.T) {
 }
 
 func testWhoIs(c Client, t *testing.T) {
-	wh := &WhoIsBuilder{
+	wh := &WhoIsOpts{
 		GlobalBroadcast: false,
 		NetworkNumber:   0,
 	}
@@ -113,7 +112,7 @@ func testWhoIs(c Client, t *testing.T) {
 // ensure that the revert was successful
 func testWritePropertyService(c Client, t *testing.T) {
 	const targetName = "Hotdog"
-	wh := &WhoIsBuilder{
+	wh := &WhoIsOpts{
 		GlobalBroadcast: false,
 		NetworkNumber:   0,
 	}
@@ -193,7 +192,7 @@ func TestDeviceClient(t *testing.T) {
 	}
 	c := NewClient(dataLink, 0)
 	go c.Run()
-	wh := &WhoIsBuilder{
+	wh := &WhoIsOpts{
 		GlobalBroadcast: false,
 		NetworkNumber:   0,
 	}

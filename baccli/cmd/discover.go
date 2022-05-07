@@ -2,15 +2,14 @@ package cmd
 
 import (
 	"encoding/json"
+	"github.com/NubeDev/bacnet"
+	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/datalink"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 	"os"
 	"sync"
 	"time"
-
-	"github.com/NubeDev/bacnet"
-	"github.com/NubeDev/bacnet/btypes"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 )
 
 var scanSize uint32
@@ -51,7 +50,7 @@ func discover(cmd *cobra.Command, args []string) {
 	log.Out = os.Stdout
 	log.SetLevel(logrus.DebugLevel)
 
-	wh := &bacnet.WhoIsBuilder{}
+	wh := &bacnet.WhoIsOpts{}
 
 	dataLink, err := datalink.NewUDPDataLink(Interface, Port)
 	if err != nil {
