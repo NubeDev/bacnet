@@ -3,16 +3,15 @@ package bacnet
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
-
 	"github.com/NubeDev/bacnet/datalink"
 	"github.com/NubeDev/bacnet/encoding"
+	"github.com/NubeDev/bacnet/helpers/validation"
+	"github.com/NubeDev/bacnet/tsm"
+	"github.com/NubeDev/bacnet/utsm"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"sync"
 	"time"
-
-	"github.com/NubeDev/bacnet/tsm"
-	"github.com/NubeDev/bacnet/utsm"
-	"github.com/sirupsen/logrus"
 )
 
 const mtuHeaderLength = 4
@@ -21,7 +20,7 @@ const forwardHeaderLength = 10
 
 type Client interface {
 	io.Closer
-	Run()
+	ClientRun()
 	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
@@ -35,18 +34,72 @@ type client struct {
 	tsm            *tsm.TSM
 	utsm           *utsm.Manager
 	readBufferPool sync.Pool
-	log            *logrus.Logger
+	log            *log.Logger
+}
+
+type ClientBuilder struct {
+	DataLink   datalink.DataLink
+	Interface  string
+	Ip         string
+	Port       int
+	SubnetCIDR int
+	MaxPDU     uint16
 }
 
 // NewClient creates a new client with the given interface and
-func NewClient(dataLink datalink.DataLink, maxPDU uint16) Client {
+func NewClient(cb *ClientBuilder) (Client, error) {
+	var err error
+	var dataLink datalink.DataLink
+
+	iface := cb.Interface
+	ip := cb.Ip
+	port := cb.Port
+	maxPDU := cb.MaxPDU
+
+	//check ip
+	ok := validation.ValidIP(ip)
+	if !ok {
+
+	}
+
+	//check port
+	if port == 0 {
+		port = datalink.DefaultPort
+	}
+	ok = validation.ValidPort(port)
+	if !ok {
+
+	}
+
+	//check adpu
 	if maxPDU == 0 {
 		maxPDU = btypes.MaxAPDU
 	}
-	log := logrus.New()
-	log.Formatter = &logrus.TextFormatter{}
-	log.SetLevel(logrus.InfoLevel)
-	return &client{
+
+	//build datalink
+	if iface != "" {
+		dataLink, err = datalink.NewUDPDataLink(iface, port)
+		if err != nil {
+			//log.Fatal(err)
+		}
+	} else {
+		//check subnet
+		sub := cb.SubnetCIDR
+		ok = validation.ValidCIDR(ip, sub)
+		if !ok {
+
+		}
+		dataLink, err = datalink.NewUDPDataLinkFromIP(ip, port, sub)
+		if err != nil {
+			//log.Fatal(err)
+		}
+	}
+
+	l := log.New()
+	l.Formatter = &log.TextFormatter{}
+	l.SetLevel(log.InfoLevel)
+
+	cli := &client{
 		dataLink: dataLink,
 		tsm:      tsm.New(defaultStateSize),
 		utsm: utsm.NewManager(
@@ -56,11 +109,33 @@ func NewClient(dataLink datalink.DataLink, maxPDU uint16) Client {
 		readBufferPool: sync.Pool{New: func() interface{} {
 			return make([]byte, maxPDU)
 		}},
-		log: log,
+		log: l,
 	}
+	return cli, err
 }
 
-func (c *client) Run() {
+//func NewClientOld(dataLink datalink.DataLink, maxPDU uint16) Client {
+//	if maxPDU == 0 {
+//		maxPDU = btypes.MaxAPDU
+//	}
+//	l := log.New()
+//	l.Formatter = &log.TextFormatter{}
+//	l.SetLevel(log.InfoLevel)
+//	return &client{
+//		dataLink: dataLink,
+//		tsm:      tsm.New(defaultStateSize),
+//		utsm: utsm.NewManager(
+//			utsm.DefaultSubscriberTimeout(time.Second*time.Duration(10)),
+//			utsm.DefaultSubscriberLastReceivedTimeout(time.Second*time.Duration(2)),
+//		),
+//		readBufferPool: sync.Pool{New: func() interface{} {
+//			return make([]byte, maxPDU)
+//		}},
+//		log: l,
+//	}
+//}
+
+func (c *client) ClientRun() {
 	var err error = nil
 	for err == nil {
 		b := c.readBufferPool.Get().([]byte)

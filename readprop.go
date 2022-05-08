@@ -11,6 +11,8 @@ import (
 
 // ReadProperty reads a single property from a single object in the given device.
 func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error) {
+	fmt.Println("ReadProperty")
+	fmt.Println("ReadProperty", device)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	id, err := c.tsm.ID(ctx)

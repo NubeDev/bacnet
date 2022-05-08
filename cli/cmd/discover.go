@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	"github.com/NubeDev/bacnet/datalink"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -49,16 +48,17 @@ func discover(cmd *cobra.Command, args []string) {
 	log.Formatter = &logrus.TextFormatter{}
 	log.Out = os.Stdout
 	log.SetLevel(logrus.DebugLevel)
+	var err error
 
 	wh := &bacnet.WhoIsOpts{}
 
-	dataLink, err := datalink.NewUDPDataLink(Interface, Port)
-	if err != nil {
-		log.Fatal(err)
+	cb := &bacnet.ClientBuilder{
+		Interface: Interface,
+		Port:      Port,
 	}
-	c := bacnet.NewClient(dataLink, 0)
+	c, _ := bacnet.NewClient(cb)
 	defer c.Close()
-	go c.Run()
+	go c.ClientRun()
 
 	log.Printf("Discovering on interface %s and port %d", Interface, Port)
 	start := time.Now()

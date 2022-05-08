@@ -15,6 +15,15 @@ func ToArr(d btypes.PropertyData) (ok bool, data []interface{}) {
 
 }
 
+func ToFloat64(d btypes.PropertyData) (ok bool, data float64) {
+	if len(d.Object.Properties) == 0 {
+		fmt.Println("No value returned")
+		return ok, data
+	}
+	data, ok = d.Object.Properties[0].Data.(float64)
+	return ok, data
+}
+
 func ToUint32(d btypes.PropertyData) (ok bool, data uint32) {
 	if len(d.Object.Properties) == 0 {
 		fmt.Println("No value returned")

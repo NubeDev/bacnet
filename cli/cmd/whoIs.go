@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/NubeDev/bacnet"
-	"github.com/NubeDev/bacnet/datalink"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -25,19 +25,14 @@ var whoIsCmd = &cobra.Command{
 
 func main(cmd *cobra.Command, args []string) {
 
-	//use NewUDPDataLinkFromIP if you want to pass in the IP
-	dataLink, err := datalink.NewUDPDataLinkFromIP("192.168.15.194", 24, Port)
-	if err != nil {
-		log.Fatal(err)
+	cb := &bacnet.ClientBuilder{
+		Interface: Interface,
+		Port:      Port,
 	}
-	dataLink.Close()
-	dataLink, err = datalink.NewUDPDataLink(Interface, Port)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c := bacnet.NewClient(dataLink, 0)
+	c, _ := bacnet.NewClient(cb)
+
 	defer c.Close()
-	go c.Run()
+	go c.ClientRun()
 	wh := &bacnet.WhoIsOpts{
 		GlobalBroadcast: true,
 		NetworkNumber:   0,
@@ -48,6 +43,8 @@ func main(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println(ids)
 
 	ioWriter := os.Stdout
 	// Check to see if a file was passed to us

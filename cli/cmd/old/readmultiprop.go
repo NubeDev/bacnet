@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	"github.com/NubeDev/bacnet/datalink"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 )
 
@@ -35,13 +33,13 @@ func readMulti(cmd *cobra.Command, args []string) {
 		btypes.PrintAllProperties()
 		return
 	}
-	dataLink, err := datalink.NewUDPDataLink(viper.GetString("interface"), viper.GetInt("port"))
-	if err != nil {
-		log.Fatal(err)
+	cb := &bacnet.ClientBuilder{
+		Interface: "",
+		Port:      2,
 	}
-	c := bacnet.NewClient(dataLink, 0)
+	c, _ := bacnet.NewClient(cb)
 	defer c.Close()
-	go c.Run()
+	go c.ClientRun()
 	wh := &bacnet.WhoIsOpts{}
 	wh.Low = startRange
 	wh.High = endRange

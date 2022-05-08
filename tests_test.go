@@ -3,7 +3,6 @@ package bacnet
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
-	"github.com/NubeDev/bacnet/datalink"
 	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	log "github.com/sirupsen/logrus"
 	"testing"
@@ -18,13 +17,12 @@ var objectID = 1
 
 func TestRead(t *testing.T) {
 
-	dataLink, err := datalink.NewUDPDataLink(iface, 47808)
-	if err != nil {
-		log.Fatal(err)
+	cb := &ClientBuilder{
+		Interface: iface,
 	}
-	c := NewClient(dataLink, 0)
+	c, _ := NewClient(cb)
 	defer c.Close()
-	go c.Run()
+	go c.ClientRun()
 
 	ip, err := ip2bytes.New(deviceIP, uint16(47808))
 	if err != nil {

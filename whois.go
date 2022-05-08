@@ -25,6 +25,13 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 	if wh.GlobalBroadcast {
 		wh.NetworkNumber = btypes.GlobalBroadcast //65535
 	}
+	if low <= 0 {
+		low = 0
+	}
+	if high <= 0 {
+		high = 4194304 //max dev id
+	}
+
 	dest.Net = wh.NetworkNumber
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,

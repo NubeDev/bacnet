@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	"github.com/NubeDev/bacnet/datalink"
 	"github.com/NubeDev/bacnet/helpers/data"
 	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // readMultiCmd represents the readMultiCmd command
@@ -30,13 +28,13 @@ func readMulti(cmd *cobra.Command, args []string) {
 		btypes.PrintAllProperties()
 		return
 	}
-	dataLink, err := datalink.NewUDPDataLink(viper.GetString("interface"), viper.GetInt("port"))
-	if err != nil {
-		log.Fatal(err)
+	cb := &bacnet.ClientBuilder{
+		Interface: Interface,
+		Port:      Port,
 	}
-	c := bacnet.NewClient(dataLink, 0)
+	c, _ := bacnet.NewClient(cb)
 	defer c.Close()
-	go c.Run()
+	go c.ClientRun()
 
 	ip, err := ip2bytes.New(deviceIP, uint16(devicePort))
 	if err != nil {

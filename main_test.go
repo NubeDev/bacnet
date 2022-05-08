@@ -15,14 +15,10 @@ const testServer = 1234
 
 // TestMain are general test
 func TestUdpDataLink(t *testing.T) {
-	dataLink, err := datalink.NewUDPDataLink(interfaceName, 0)
-	if err != nil {
-		t.Fatal(err)
-	}
-	c := NewClient(dataLink, 0)
+	c, _ := NewClient(&ClientBuilder{Interface: interfaceName})
 	c.Close()
 
-	_, err = datalink.NewUDPDataLink("pizzainterfacenotreal", 0)
+	_, err := datalink.NewUDPDataLink("pizzainterfacenotreal", 0)
 	if err == nil {
 		t.Fatal("Successfully passed a false interface.")
 	}
@@ -37,11 +33,7 @@ func TestMac(t *testing.T) {
 }
 
 func TestServices(t *testing.T) {
-	dataLink, err := datalink.NewUDPDataLink(interfaceName, 0)
-	if err != nil {
-		t.Fatal(err)
-	}
-	c := NewClient(dataLink, 0)
+	c, _ := NewClient(&ClientBuilder{Interface: interfaceName})
 	defer c.Close()
 
 	t.Run("Read Property", func(t *testing.T) {
@@ -185,13 +177,8 @@ func testWritePropertyService(c Client, t *testing.T) {
 }
 
 func TestDeviceClient(t *testing.T) {
-	dataLink, err := datalink.NewUDPDataLink("本地连接", 47809)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	c := NewClient(dataLink, 0)
-	go c.Run()
+	c, _ := NewClient(&ClientBuilder{Interface: interfaceName})
+	go c.ClientRun()
 	wh := &WhoIsOpts{
 		GlobalBroadcast: false,
 		NetworkNumber:   0,
