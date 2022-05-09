@@ -2,7 +2,6 @@ package encoding
 
 import (
 	"fmt"
-
 	"github.com/NubeDev/bacnet/btypes"
 )
 

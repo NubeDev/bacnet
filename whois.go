@@ -38,7 +38,6 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 		Destination:           &dest,
 		Source:                c.dataLink.GetMyAddress(),
 		IsNetworkLayerMessage: false,
-
 		// We are not expecting a direct reply from a single destination
 		ExpectingReply: false,
 		Priority:       btypes.Normal,
@@ -58,7 +57,6 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 		start = low
 		end = high
 	}
-
 	// Run in parallel
 	errChan := make(chan error)
 	go func() {
@@ -79,6 +77,7 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 	uniqueList := make([]btypes.Device, len(uniqueMap))
 
 	for _, v := range values {
+
 		r, ok := v.(btypes.IAm)
 		// Skip non I AM responses
 		if !ok {

@@ -2,10 +2,9 @@ package datalink
 
 import (
 	"fmt"
+	"github.com/NubeDev/bacnet/btypes"
 	"net"
 	"strings"
-
-	"github.com/NubeDev/bacnet/btypes"
 )
 
 // DefaultPort that BacnetIP will use if a port is not given. Valid ports for
@@ -99,7 +98,8 @@ func (c *udpDataLink) Receive(data []byte) (*btypes.Address, int, error) {
 		return nil, n, err
 	}
 	adr.IP = adr.IP.To4()
-	return UDPToAddress(adr), n, nil
+	udpAddr := UDPToAddress(adr)
+	return udpAddr, n, nil
 }
 
 func (c *udpDataLink) GetMyAddress() *btypes.Address {

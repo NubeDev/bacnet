@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/NubeDev/bacnet"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -44,8 +44,6 @@ func main(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Println(ids)
-
 	ioWriter := os.Stdout
 	// Check to see if a file was passed to us
 	if len(outputFilename) > 0 {
@@ -58,7 +56,8 @@ func main(cmd *cobra.Command, args []string) {
 	// Pretty Print!
 	w := json.NewEncoder(ioWriter)
 	w.SetIndent("", "    ")
-	w.Encode(ids)
+	pprint.Print(ids)
+	//w.Encode(ids) //TODO uncomment this to pretty print as json
 
 }
 

@@ -2,6 +2,7 @@ package encoding
 
 import (
 	"encoding/json"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"log"
 	"reflect"
 	"strings"
@@ -159,7 +160,7 @@ func TestIAm(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	pprint.Print(after)
 	equal := reflect.DeepEqual(iam, after)
 	if !equal {
 		t.Errorf("Encoding/Decoding Failed: %v does not equal %v", iam, after)

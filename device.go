@@ -97,7 +97,7 @@ func NewClient(cb *ClientBuilder) (Client, error) {
 
 	l := log.New()
 	l.Formatter = &log.TextFormatter{}
-	l.SetLevel(log.InfoLevel)
+	l.SetLevel(log.DebugLevel)
 
 	cli := &client{
 		dataLink: dataLink,
@@ -113,27 +113,6 @@ func NewClient(cb *ClientBuilder) (Client, error) {
 	}
 	return cli, err
 }
-
-//func NewClientOld(dataLink datalink.DataLink, maxPDU uint16) Client {
-//	if maxPDU == 0 {
-//		maxPDU = btypes.MaxAPDU
-//	}
-//	l := log.New()
-//	l.Formatter = &log.TextFormatter{}
-//	l.SetLevel(log.InfoLevel)
-//	return &client{
-//		dataLink: dataLink,
-//		tsm:      tsm.New(defaultStateSize),
-//		utsm: utsm.NewManager(
-//			utsm.DefaultSubscriberTimeout(time.Second*time.Duration(10)),
-//			utsm.DefaultSubscriberLastReceivedTimeout(time.Second*time.Duration(2)),
-//		),
-//		readBufferPool: sync.Pool{New: func() interface{} {
-//			return make([]byte, maxPDU)
-//		}},
-//		log: l,
-//	}
-//}
 
 func (c *client) ClientRun() {
 	var err error = nil
@@ -160,7 +139,6 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 		c.log.Error(err)
 		return
 	}
-
 	if header.Function == btypes.BacFuncBroadcast || header.Function == btypes.BacFuncUnicast || header.Function == btypes.BacFuncForwardedNPDU {
 		// Remove the header information
 		b = b[mtuHeaderLength:]
@@ -181,21 +159,25 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 			c.log.Errorf("Issue decoding APDU: %v", err)
 			return
 		}
-
 		switch apdu.DataType {
 		case btypes.UnconfirmedServiceRequest:
 			if apdu.UnconfirmedService == btypes.ServiceUnconfirmedIAm {
-				c.log.Debug("Received IAm Message")
 				dec = encoding.NewDecoder(apdu.RawData)
 				var iam btypes.IAm
-
 				err = dec.IAm(&iam)
-
+				c.log.Debug("Received IAM Message", iam.ID)
 				iam.Addr = *src
+				if npdu.Source.Net > 0 { // add in device network number
+					iam.Addr.Net = npdu.Source.Net
+				}
+				if len(npdu.Source.Adr) > 0 { // add in hardware mac
+					iam.Addr.Adr = npdu.Source.Adr
+				}
 				if err != nil {
 					c.log.Error(err)
 					return
 				}
+
 				c.utsm.Publish(int(iam.ID.Instance), iam)
 			} else if apdu.UnconfirmedService == btypes.ServiceUnconfirmedWhoIs {
 				dec := encoding.NewDecoder(apdu.RawData)
@@ -270,7 +252,6 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int,
 	if err != nil {
 		return 0, err
 	}
-
 	// use default udp type, src = local address (nil)
 	return c.dataLink.Send(e.Bytes(), npdu, &dest)
 }

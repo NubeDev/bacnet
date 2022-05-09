@@ -4,6 +4,8 @@ import (
 	"github.com/NubeDev/bacnet/btypes"
 )
 
+//https://github.com/bacnet-stack/bacnet-stack/blob/master/src/bacnet/npdu.c#L391
+
 // NPDU encodes the network layer control message
 func (e *Encoder) NPDU(n *btypes.NPDU) {
 	e.write(n.Version)
@@ -60,12 +62,12 @@ func (e *Encoder) NPDU(n *btypes.NPDU) {
 }
 
 func (d *Decoder) Address(a *btypes.Address) {
-	d.decode(&a.Net)
+	d.decode(&a.Net) //decode the network address
 	d.decode(&a.Len)
-
 	// Make space for address
-	a.Adr = make([]uint8, a.Len)
+	a.Adr = make([]uint8, a.Len) //decode the device hardware mac addr
 	d.decode(a.Adr)
+
 }
 
 // NPDU encodes the network layer control message
