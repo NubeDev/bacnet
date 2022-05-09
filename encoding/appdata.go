@@ -177,7 +177,6 @@ func (d *Decoder) double(x *float64) {
 }
 
 func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
-	fmt.Println("IN HERE AppData")
 	//if null used for sending null on point write to prop 87
 	switch i.(type) {
 	case btypes.Null:
@@ -199,9 +198,7 @@ func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
 			e.err = err
 			return err
 		}
-
 	}
-
 	switch val := i.(type) {
 	case float32:
 		e.tag(tagInfo{ID: tagReal, Context: appLayerContext, Value: realLen})

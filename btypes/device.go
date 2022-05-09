@@ -32,6 +32,31 @@ type Device struct {
 	SupportsWPM   bool //support read prob multiple
 }
 
+/*
+If the device doesn't support segmentation then we need to read for example the device object list in chunks of the array index
+Properties: []btypes.Property{
+	{
+		Type:       prop,
+		ArrayIndex: bacnet.ArrayAll, So this needs to be changed as an example 0:returns AI:1, 1:returns AI:2 and so on
+	},
+},
+
+BACnetSegmentation:
+segmented-both:0
+segmented-transmit:1
+segmented-receive:2
+no-segmentation: 3
+
+MaxApdu
+0: 50
+1: 128
+2: 206 jci PCG
+3: 480 honeywell spyder
+4: 1024
+5: 1476 easyIO-30p when over IP (same device when over MSTP is 480)
+
+*/
+
 // NewDevice returns a new instance of ta bacnet device
 func NewDevice(device *Device) (*Device, error) {
 

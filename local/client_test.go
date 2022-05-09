@@ -12,8 +12,22 @@ import (
 
 var iface = "wlp3s0"
 var localDevicePort = 47809
-var deviceIP = "192.168.15.194"
-var deviceID = 1234
+var deviceIP = "192.168.15.20"
+var deviceID = 1103
+var networkNumber = 4
+var macMSTP = 4
+var segmentation = 3
+var MaxApdu = 480
+
+/*
+MaxApdu
+0 = 50
+1 = 128
+2 = 206 jci PCG
+3 = 480 honeywell spyder
+4 = 1024
+5 = 1476  easyIO-30p when over IP
+*/
 
 func TestWhoIs(t *testing.T) {
 
@@ -25,7 +39,7 @@ func TestWhoIs(t *testing.T) {
 	defer client.ClientClose()
 	go client.ClientRun()
 
-	whoIs, err := client.bacnet.WhoIs(&bacnet.WhoIsOpts{})
+	whoIs, err := client.bacnet.WhoIs(&bacnet.WhoIsOpts{NetworkNumber: 4})
 	if err != nil {
 		fmt.Println("ERR-whoIs", err)
 		return
@@ -48,7 +62,7 @@ func TestReadObjects(t *testing.T) {
 	defer localDevice.ClientClose()
 	go localDevice.ClientRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: uint32(MaxApdu), Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
@@ -74,12 +88,12 @@ func TestRead(t *testing.T) {
 	defer localDevice.ClientClose()
 	go localDevice.ClientRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: 206, Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
 
-	out, err := device.Read(1, btypes.AnalogOutput, btypes.PropPresentValue)
+	out, err := device.Read(1, btypes.BinaryOutput, btypes.PropPresentValue)
 	fmt.Println(err)
 	fmt.Println(out)
 	fmt.Println("DATA", out.Object.Properties[0].Data)

@@ -5,6 +5,16 @@ import "fmt"
 type ServiceConfirmed uint8
 type ServiceUnconfirmed uint8
 
+/*
+0 = 50
+1 = 128
+2 = 206
+3 = 480
+4 = 1024
+5 = 1476
+*/
+
+const MaxAPDUmstp = 480
 const MaxAPDUOverIP = 1476
 const MaxAPDU = MaxAPDUOverIP
 

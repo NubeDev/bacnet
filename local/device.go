@@ -11,14 +11,27 @@ type Device struct {
 	Port          int
 	DeviceID      int
 	NetworkNumber int
-	MSTPMac       int
+	MacMSTP       int
+	MaxApdu       uint32
+	Segmentation  uint32
 	Dev           btypes.Device
 	bacnet        bacnet.Client
 }
 
 // NewDevice returns a new instance of ta bacnet device
 func NewDevice(bacnetDevice *Local, device *Device) (*Device, error) {
-	dev, err := btypes.NewDevice(&btypes.Device{Ip: device.Ip, DeviceID: device.DeviceID})
+
+	//btypes
+	dev := &btypes.Device{
+		Ip:            device.Ip,
+		DeviceID:      device.DeviceID,
+		NetworkNumber: device.NetworkNumber,
+		MacMSTP:       device.MacMSTP,
+		MaxApdu:       device.MaxApdu,
+		Segmentation:  btypes.Enumerated(device.Segmentation),
+	}
+
+	dev, err := btypes.NewDevice(dev)
 	if err != nil {
 		return nil, err
 	}

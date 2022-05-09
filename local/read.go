@@ -18,11 +18,12 @@ func (device *Device) Read(objectID int, objectType btypes.ObjectType, prop btyp
 			Properties: []btypes.Property{
 				{
 					Type:       prop,
-					ArrayIndex: bacnet.ArrayAll,
+					ArrayIndex: bacnet.ArrayAll, //bacnet.ArrayAll
 				},
 			},
 		},
 	}
+	fmt.Println("HERE 0", rp.Object.Properties[0].ArrayIndex)
 	out, err := device.bacnet.ReadProperty(device.Dev, rp)
 	if err != nil {
 		if rp.Object.Properties[0].Type == btypes.PropObjectList {

@@ -2,7 +2,6 @@ package local
 
 import (
 	"fmt"
-	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	log "github.com/sirupsen/logrus"
 )
@@ -18,7 +17,7 @@ func (device *Device) DeviceObjects() ([]btypes.ObjectID, error) {
 			Properties: []btypes.Property{
 				btypes.Property{
 					Type:       btypes.PropObjectList,
-					ArrayIndex: bacnet.ArrayAll,
+					ArrayIndex: 97,
 				},
 			},
 		},

@@ -53,7 +53,6 @@ func (e *Encoder) ReadPropertyAck(invokeID uint8, data btypes.PropertyData) erro
 	if len(data.Object.Properties) != 1 {
 		return fmt.Errorf("Property length length must be 1 not %d", len(data.Object.Properties))
 	}
-
 	// PDU Type
 	a := btypes.APDU{
 		DataType: btypes.ComplexAck,
