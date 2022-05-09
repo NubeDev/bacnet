@@ -181,17 +181,14 @@ func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
 	//if null used for sending null on point write to prop 87
 	switch i.(type) {
 	case btypes.Null:
-		fmt.Println("IN HERE btypes.Null")
 		e.tag(tagInfo{ID: tagNull, Context: appLayerContext})
 		return nil
 	}
-
 	//if point type is a BO or BV then set the type to type enum (data type 9)
 	if typeBVBO {
 		v := i.(uint32)
 		v, ok := i.(uint32)
 		if ok {
-			fmt.Println("IN HERE typeBVBO")
 			length := valueLength(v)
 			e.tag(tagInfo{ID: tagEnumerated, Context: appLayerContext, Value: uint32(length)})
 			e.enumerated(v)
