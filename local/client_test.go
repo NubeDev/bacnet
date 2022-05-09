@@ -11,10 +11,13 @@ import (
 )
 
 var iface = "wlp3s0"
+var localDevicePort = 47809
+var deviceIP = "192.168.15.194"
+var deviceID = 1234
 
 func TestWhoIs(t *testing.T) {
 
-	client, err := New(&Local{Interface: iface})
+	client, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
@@ -30,16 +33,14 @@ func TestWhoIs(t *testing.T) {
 
 	for _, dev := range whoIs {
 		fmt.Println(dev.ID)
+		fmt.Println(dev.Vendor)
 	}
 
 }
 
-var deviceIP = "192.168.15.202"
-var deviceID = 202
-
 func TestReadObjects(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface})
+	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
@@ -65,7 +66,7 @@ func TestReadObjects(t *testing.T) {
 
 func TestRead(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface})
+	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return

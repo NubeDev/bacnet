@@ -5,6 +5,8 @@ import (
 	"github.com/NubeDev/bacnet/btypes"
 	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	log "github.com/sirupsen/logrus"
+	"go/build"
+	"os"
 	"testing"
 )
 
@@ -16,6 +18,12 @@ var deviceHardwareMac = 0
 var objectID = 1
 
 func TestRead(t *testing.T) {
+
+	gopath := os.Getenv("GOPATH")
+	if gopath == "" {
+		gopath = build.Default.GOPATH
+	}
+	fmt.Println(gopath)
 
 	cb := &ClientBuilder{
 		Interface: iface,
