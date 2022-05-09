@@ -121,7 +121,7 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --n
 - [x] Johnson Controls (FEC)
 - [x] Easy-IO 30p, tested over IP and ms-tp
 - [ ] Delta Controls
-- [ ] Reliable Controls
+- [x] Reliable Controls
 - [x] Honeywell Spyder
 - [ ] Niagara N4 jace
 - [ ] Schneider
