@@ -39,9 +39,13 @@ func main(cmd *cobra.Command, args []string) {
 	}
 	wh.Low = startRange
 	wh.High = endRange
-	ids, err := c.WhoIs(wh)
+	devices, err := c.WhoIs(wh)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	for _, device := range devices {
+		pprint.Print(device)
 	}
 
 	ioWriter := os.Stdout
@@ -56,7 +60,7 @@ func main(cmd *cobra.Command, args []string) {
 	// Pretty Print!
 	w := json.NewEncoder(ioWriter)
 	w.SetIndent("", "    ")
-	pprint.Print(ids)
+	//pprint.Print(ids)
 	//w.Encode(ids) //TODO uncomment this to pretty print as json
 
 }
