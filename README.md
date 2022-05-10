@@ -15,7 +15,7 @@ For usage run:
 ```
 go mod tidy
 cd cli
-go run baccli --help
+go run main.go --help
 ```
 
 ## examples
