@@ -12,10 +12,10 @@ import (
 
 var iface = "wlp3s0"
 var localDevicePort = 47809
-var deviceIP = "192.168.15.20"
-var deviceID = 1103
-var networkNumber = 4
-var macMSTP = 4
+var deviceIP = "192.168.15.194"
+var deviceID = 1234
+var networkNumber = 0
+var macMSTP = 0
 var segmentation = 3
 var MaxApdu = 480
 
@@ -27,6 +27,12 @@ MaxApdu
 3 = 480 honeywell spyder
 4 = 1024
 5 = 1476  easyIO-30p when over IP
+
+BACnetSegmentation:
+segmented-both:0
+segmented-transmit:1
+segmented-receive:2
+no-segmentation: 3
 */
 
 func TestWhoIs(t *testing.T) {

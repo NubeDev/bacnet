@@ -29,6 +29,6 @@ func TestWrite(t *testing.T) {
 	var writeValueBO uint32 = 1
 	device.PointWriteBool(&Point{ObjectID: 1, ObjectType: btypes.BinaryOutput}, writeValueBO)
 
-	device.PointWriteAnalogue(&Point{ObjectID: 1, ObjectType: btypes.AnalogOutput}, 33.3)
+	//device.PointWriteAnalogue(&Point{ObjectID: 1, ObjectType: btypes.BinaryOutput}, 1)
 
 }
