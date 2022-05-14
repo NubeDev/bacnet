@@ -99,7 +99,7 @@ func TestRead(t *testing.T) {
 		return
 	}
 
-	out, err := device.Read(1, btypes.BinaryOutput, btypes.PropPresentValue)
+	out, err := device.Read(1234, btypes.DeviceType, btypes.PropObjectName)
 	fmt.Println(err)
 	fmt.Println(out)
 	fmt.Println("DATA", out.Object.Properties[0].Data)

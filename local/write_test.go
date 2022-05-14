@@ -22,12 +22,12 @@ func TestWrite(t *testing.T) {
 	}
 
 	//write an AO
-	var writeValueAo float32 = -11
-	device.Write(&Write{ObjectID: 1, ObjectType: btypes.AnalogOutput, Prop: btypes.PropPresentValue, WriteValue: writeValueAo})
+	//var writeValueAo float32 = -11
+	device.Write(&Write{ObjectID: 1234, ObjectType: btypes.DeviceType, Prop: btypes.PropObjectName, WriteValue: "aidan test"})
 
 	//write an BO
-	var writeValueBO uint32 = 1
-	device.PointWriteBool(&Point{ObjectID: 1, ObjectType: btypes.BinaryOutput}, writeValueBO)
+	//var writeValueBO uint32 = 1
+	//device.PointWriteBool(&Point{ObjectID: 1, ObjectType: btypes.BinaryOutput}, writeValueBO)
 
 	//device.PointWriteAnalogue(&Point{ObjectID: 1, ObjectType: btypes.BinaryOutput}, 1)
 
