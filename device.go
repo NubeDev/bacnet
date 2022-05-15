@@ -167,12 +167,16 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 				err = dec.IAm(&iam)
 				c.log.Debug("Received IAM Message", iam.ID)
 				iam.Addr = *src
-				if npdu.Source.Net > 0 { // add in device network number
-					iam.Addr.Net = npdu.Source.Net
+
+				if npdu.Source != nil {
+					if npdu.Source.Net > 0 { // add in device network number
+						iam.Addr.Net = npdu.Source.Net
+					}
+					if len(npdu.Source.Adr) > 0 { // add in hardware mac
+						iam.Addr.Adr = npdu.Source.Adr
+					}
 				}
-				if len(npdu.Source.Adr) > 0 { // add in hardware mac
-					iam.Addr.Adr = npdu.Source.Adr
-				}
+
 				if err != nil {
 					c.log.Error(err)
 					return
