@@ -8,7 +8,7 @@ import (
 )
 
 type Write struct {
-	ObjectID      int
+	ObjectID      btypes.ObjectInstance
 	ObjectType    btypes.ObjectType
 	Prop          btypes.PropertyType
 	WriteValue    interface{}

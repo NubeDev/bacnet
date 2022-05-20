@@ -11,13 +11,13 @@ import (
 )
 
 var iface = "wlp3s0"
-var localDevicePort = 47809
-var deviceIP = "192.168.15.194"
-var deviceID = 1234
+var localDevicePort = 47808
+var deviceIP = "192.168.15.191"
+var deviceID = 202
 var networkNumber = 0
 var macMSTP = 0
-var segmentation = 3
-var MaxApdu = 480
+var segmentation = btypes.SegmentedBoth
+var MaxApdu = btypes.MaxAPDU1476
 
 /*
 MaxApdu
@@ -99,7 +99,15 @@ func TestRead(t *testing.T) {
 		return
 	}
 
-	out, err := device.Read(1234, btypes.DeviceType, btypes.PropObjectName)
+	obj := &Object{
+		ObjectID:   1,
+		ObjectType: btypes.AnalogOutput,
+		Prop:       btypes.PropObjectName,
+		ArrayIndex: btypes.ArrayAll, //btypes.ArrayAll
+
+	}
+
+	out, err := device.Read(obj)
 	fmt.Println(err)
 	fmt.Println(out)
 	fmt.Println("DATA", out.Object.Properties[0].Data)

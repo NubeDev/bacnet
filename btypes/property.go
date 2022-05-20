@@ -11,20 +11,23 @@ const defaultSpacing = 4
 type PropertyType uint32
 
 const (
-	PropAllProperties    PropertyType = 8
-	PropDescription      PropertyType = 28
-	PropFileSize         PropertyType = 42
-	PropFileType         PropertyType = 43
-	PropModelName        PropertyType = 70
-	PropObjectIdentifier PropertyType = 75
-	PropObjectList       PropertyType = 76
-	PropObjectName       PropertyType = 77
-	PropObjectReference  PropertyType = 78
-	PropObjectType       PropertyType = 79
-	PropPresentValue     PropertyType = 85
-	PropUnits            PropertyType = 117
-	PropPriorityArray    PropertyType = 87
-	PropMaxAPDU          PropertyType = 62
+	PropAllProperties         PropertyType = 8
+	PropDescription           PropertyType = 28
+	PropFileSize              PropertyType = 42
+	PropFileType              PropertyType = 43
+	PropModelName             PropertyType = 70
+	PropObjectIdentifier      PropertyType = 75
+	PropObjectList            PropertyType = 76
+	PropObjectName            PropertyType = 77
+	PropObjectReference       PropertyType = 78
+	PropObjectType            PropertyType = 79
+	PropPresentValue          PropertyType = 85
+	PropUnits                 PropertyType = 117
+	PropPriorityArray         PropertyType = 87
+	PropMaxAPDU               PropertyType = 62
+	PropSegmentationSupported PropertyType = 107
+	PropVendorName            PropertyType = 121
+	PropVendorIdentifier      PropertyType = 120
 
 	//from github.com/bacnet-stack/bacnet-stack
 	PROP_ACKED_TRANSITIONS                  PropertyType = 0
@@ -134,32 +137,32 @@ const (
 	PROP_RELINQUISH_DEFAULT                   PropertyType = 104
 	PROP_REQUIRED                             PropertyType = 105
 	PROP_RESOLUTION                           PropertyType = 106
-	PROP_SEGMENTATION_SUPPORTED               PropertyType = 107
-	PROP_SETPOINT                             PropertyType = 108
-	PROP_SETPOINT_REFERENCE                   PropertyType = 109
-	PROP_STATE_TEXT                           PropertyType = 110
-	PROP_STATUS_FLAGS                         PropertyType = 111
-	PROP_SYSTEM_STATUS                        PropertyType = 112
-	PROP_TIME_DELAY                           PropertyType = 113
-	PROP_TIME_OF_ACTIVE_TIME_RESET            PropertyType = 114
-	PROP_TIME_OF_STATE_COUNT_RESET            PropertyType = 115
-	PROP_TIME_SYNCHRONIZATION_RECIPIENTS      PropertyType = 116
-	PROP_Propertybtypes                       PropertyType = 117
-	PROP_UPDATE_INTERVAL                      PropertyType = 118
-	PROP_UTC_OFFSET                           PropertyType = 119
-	PROP_VENDOR_IDENTIFIER                    PropertyType = 120
-	PROP_VENDOR_NAME                          PropertyType = 121
-	PROP_VT_CLASSES_SUPPORTED                 PropertyType = 122
-	PROP_WEEKLY_SCHEDULE                      PropertyType = 123
-	PROP_ATTEMPTED_SAMPLES                    PropertyType = 124
-	PROP_AVERAGE_VALUE                        PropertyType = 125
-	PROP_BUFFER_SIZE                          PropertyType = 126
-	PROP_CLIENT_COV_INCREMENT                 PropertyType = 127
-	PROP_COV_RESUBSCRIPTION_INTERVAL          PropertyType = 128
-	PROP_CURRENT_NOTIFY_TIME                  PropertyType = 129
-	PROP_EVENT_TIME_STAMPS                    PropertyType = 130
-	PROP_LOG_BUFFER                           PropertyType = 131
-	PROP_LOG_DEVICE_OBJECT_PROPERTY           PropertyType = 132
+
+	PROP_SETPOINT                        PropertyType = 108
+	PROP_SETPOINT_REFERENCE              PropertyType = 109
+	PROP_STATE_TEXT                      PropertyType = 110
+	PROP_STATUS_FLAGS                    PropertyType = 111
+	PROP_SYSTEM_STATUS                   PropertyType = 112
+	PROP_TIME_DELAY                      PropertyType = 113
+	PROP_TIME_OF_ACTIVE_TIME_RESET       PropertyType = 114
+	PROP_TIME_OF_STATE_COUNT_RESET       PropertyType = 115
+	PROP_TIME_SYNCHRONIZATION_RECIPIENTS PropertyType = 116
+	PROP_Propertybtypes                  PropertyType = 117
+	PROP_UPDATE_INTERVAL                 PropertyType = 118
+	PROP_UTC_OFFSET                      PropertyType = 119
+	PROP_VENDOR_IDENTIFIER               PropertyType = 120
+
+	PROP_VT_CLASSES_SUPPORTED        PropertyType = 122
+	PROP_WEEKLY_SCHEDULE             PropertyType = 123
+	PROP_ATTEMPTED_SAMPLES           PropertyType = 124
+	PROP_AVERAGE_VALUE               PropertyType = 125
+	PROP_BUFFER_SIZE                 PropertyType = 126
+	PROP_CLIENT_COV_INCREMENT        PropertyType = 127
+	PROP_COV_RESUBSCRIPTION_INTERVAL PropertyType = 128
+	PROP_CURRENT_NOTIFY_TIME         PropertyType = 129
+	PROP_EVENT_TIME_STAMPS           PropertyType = 130
+	PROP_LOG_BUFFER                  PropertyType = 131
+	PROP_LOG_DEVICE_OBJECT_PROPERTY  PropertyType = 132
 	/* The enable property is renamed from log-enable in
 	   Addendum b to ANSI/ASHRAE 135-2004(135b-2) */
 	PROP_ENABLE                       PropertyType = 133

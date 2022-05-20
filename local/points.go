@@ -1,12 +1,13 @@
 package local
 
 import (
+	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/helpers/data"
 )
 
 type Point struct {
-	ObjectID      int
+	ObjectID      btypes.ObjectInstance
 	ObjectType    btypes.ObjectType
 	WriteValue    interface{}
 	WriteNull     bool
@@ -22,7 +23,14 @@ func (device *Device) PointReadFloat64(pnt *Point) (float64, error) {
 	if device.isPointFloat(pnt) {
 
 	}
-	read, err := device.Read(pnt.ObjectID, pnt.ObjectType, btypes.PropPresentValue)
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ObjectType: pnt.ObjectType,
+		Prop:       btypes.PropPresentValue,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+
+	read, err := device.Read(obj)
 	if err != nil {
 		return 0, err
 	}
@@ -34,7 +42,14 @@ func (device *Device) PointReadBool(pnt *Point) (bool, error) {
 	if !device.isPointBool(pnt) {
 
 	}
-	read, err := device.Read(pnt.ObjectID, pnt.ObjectType, btypes.PropPresentValue)
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ObjectType: pnt.ObjectType,
+		Prop:       btypes.PropPresentValue,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+
+	read, err := device.Read(obj)
 	if err != nil {
 		return false, err
 	}
@@ -45,7 +60,14 @@ func (device *Device) PointReleaseOverride(pnt *Point) (bool, error) {
 	if !device.isPointWriteable(pnt) {
 		//TODO add errors
 	}
-	read, err := device.Read(pnt.ObjectID, pnt.ObjectType, btypes.PropPresentValue)
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ObjectType: pnt.ObjectType,
+		Prop:       btypes.PropPresentValue,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+
+	read, err := device.Read(obj)
 	if err != nil {
 		return false, err
 	}
@@ -101,8 +123,23 @@ func (device *Device) toFloat(d btypes.PropertyData) float64 {
 	return out
 }
 
+func (device *Device) toUint32(d btypes.PropertyData) uint32 {
+	_, out := data.ToUint32(d)
+	return out
+}
+
+func (device *Device) toInt(d btypes.PropertyData) int {
+	_, out := data.ToInt(d)
+	return out
+}
+
 func (device *Device) toBool(d btypes.PropertyData) bool {
 	_, out := data.ToBool(d)
+	return out
+}
+
+func (device *Device) toStr(d btypes.PropertyData) string {
+	_, out := data.ToStr(d)
 	return out
 }
 
