@@ -11,23 +11,25 @@ const defaultSpacing = 4
 type PropertyType uint32
 
 const (
-	PropAllProperties         PropertyType = 8
-	PropDescription           PropertyType = 28
-	PropFileSize              PropertyType = 42
-	PropFileType              PropertyType = 43
-	PropModelName             PropertyType = 70
-	PropObjectIdentifier      PropertyType = 75
-	PropObjectList            PropertyType = 76
-	PropObjectName            PropertyType = 77
-	PropObjectReference       PropertyType = 78
-	PropObjectType            PropertyType = 79
-	PropPresentValue          PropertyType = 85
-	PropUnits                 PropertyType = 117
-	PropPriorityArray         PropertyType = 87
-	PropMaxAPDU               PropertyType = 62
-	PropSegmentationSupported PropertyType = 107
-	PropVendorName            PropertyType = 121
-	PropVendorIdentifier      PropertyType = 120
+	PropAllProperties                PropertyType = 8
+	PropDescription                  PropertyType = 28
+	PropFileSize                     PropertyType = 42
+	PropFileType                     PropertyType = 43
+	PropModelName                    PropertyType = 70
+	PropObjectIdentifier             PropertyType = 75
+	PropObjectList                   PropertyType = 76
+	PropObjectName                   PropertyType = 77
+	PropObjectReference              PropertyType = 78
+	PropObjectType                   PropertyType = 79
+	PropPresentValue                 PropertyType = 85
+	PropUnits                        PropertyType = 117
+	PropPriorityArray                PropertyType = 87
+	PropMaxAPDU                      PropertyType = 62
+	PropSegmentationSupported        PropertyType = 107
+	PropVendorName                   PropertyType = 121
+	PropVendorIdentifier             PropertyType = 120
+	PropProtocolObjectTypesSupported PropertyType = 96
+	ProtocolServicesSupported        PropertyType = 97
 
 	//from github.com/bacnet-stack/bacnet-stack
 	PROP_ACKED_TRANSITIONS                  PropertyType = 0
@@ -126,17 +128,16 @@ const (
 	PROP_PROPORTIONAL_CONSTANT                PropertyType = 93
 	PROP_PROPORTIONAL_CONSTANT_Propertybtypes PropertyType = 94
 	PROP_PROTOCOL_CONFORMANCE_CLASS           PropertyType = 95 /* deleted in version 1 revision 2 */
-	PROP_PROTOCOL_OBJECT_btypes_SUPPORTED     PropertyType = 96
-	PROP_PROTOCOL_SERVICES_SUPPORTED          PropertyType = 97
-	PROP_PROTOCOL_VERSION                     PropertyType = 98
-	PROP_READ_ONLY                            PropertyType = 99
-	PROP_REASON_FOR_HALT                      PropertyType = 100
-	PROP_RECIPIENT                            PropertyType = 101
-	PROP_RECIPIENT_LIST                       PropertyType = 102
-	PROP_RELIABILITY                          PropertyType = 103
-	PROP_RELINQUISH_DEFAULT                   PropertyType = 104
-	PROP_REQUIRED                             PropertyType = 105
-	PROP_RESOLUTION                           PropertyType = 106
+
+	PROP_PROTOCOL_VERSION   PropertyType = 98
+	PROP_READ_ONLY          PropertyType = 99
+	PROP_REASON_FOR_HALT    PropertyType = 100
+	PROP_RECIPIENT          PropertyType = 101
+	PROP_RECIPIENT_LIST     PropertyType = 102
+	PROP_RELIABILITY        PropertyType = 103
+	PROP_RELINQUISH_DEFAULT PropertyType = 104
+	PROP_REQUIRED           PropertyType = 105
+	PROP_RESOLUTION         PropertyType = 106
 
 	PROP_SETPOINT                        PropertyType = 108
 	PROP_SETPOINT_REFERENCE              PropertyType = 109
@@ -522,6 +523,7 @@ const (
 	PROP_SUBORDINATE_RELATIONSHIPS         PropertyType = 489
 	PROP_DEFAULT_SUBORDINATE_RELATIONSHIP  PropertyType = 490
 	PROP_REPRESENTS                        PropertyType = 491
+
 	/* The special property identifiers all  optional  and required  */
 	/* are reserved for use in the ReadPropertyConditional and */
 	/* ReadPropertyMultiple services or services not defined in this standard. */
@@ -531,6 +533,7 @@ const (
 	/* do the max range inside of enum so that
 	   compilers will allocate adequate sized datatype for enum
 	   which is used to store decoding */
+
 	MAX_BACNET_PROPERTY_ID PropertyType = 4194303
 )
 

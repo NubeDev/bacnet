@@ -20,8 +20,6 @@ type Device struct {
 
 // NewDevice returns a new instance of ta bacnet device
 func NewDevice(bacnetDevice *Local, device *Device) (*Device, error) {
-
-	//btypes
 	dev := &btypes.Device{
 		Ip:            device.Ip,
 		DeviceID:      device.DeviceID,

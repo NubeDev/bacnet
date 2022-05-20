@@ -12,12 +12,12 @@ import (
 
 var iface = "wlp3s0"
 var localDevicePort = 47808
-var deviceIP = "192.168.15.191"
+var deviceIP = "192.168.15.202"
 var deviceID = 202
 var networkNumber = 0
 var macMSTP = 0
 var segmentation = btypes.SegmentedBoth
-var MaxApdu = btypes.MaxAPDU1476
+var MaxApdu uint32 = btypes.MaxAPDU1476
 
 /*
 MaxApdu
@@ -94,15 +94,15 @@ func TestRead(t *testing.T) {
 	defer localDevice.ClientClose()
 	go localDevice.ClientRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: 206, Segmentation: uint32(segmentation)})
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: MaxApdu, Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
 
 	obj := &Object{
-		ObjectID:   1,
-		ObjectType: btypes.AnalogOutput,
-		Prop:       btypes.PropObjectName,
+		ObjectID:   202,
+		ObjectType: btypes.DeviceType,
+		Prop:       btypes.ProtocolServicesSupported,
 		ArrayIndex: btypes.ArrayAll, //btypes.ArrayAll
 
 	}
@@ -110,6 +110,6 @@ func TestRead(t *testing.T) {
 	out, err := device.Read(obj)
 	fmt.Println(err)
 	fmt.Println(out)
-	fmt.Println("DATA", out.Object.Properties[0].Data)
+	//fmt.Println("DATA", out.Object.Properties[0].Data)
 
 }

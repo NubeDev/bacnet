@@ -123,6 +123,11 @@ func (device *Device) toFloat(d btypes.PropertyData) float64 {
 	return out
 }
 
+func (device *Device) ToBitString(d btypes.PropertyData) *btypes.BitString {
+	_, out := data.ToBitString(d)
+	return out
+}
+
 func (device *Device) toUint32(d btypes.PropertyData) uint32 {
 	_, out := data.ToUint32(d)
 	return out

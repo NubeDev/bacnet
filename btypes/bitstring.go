@@ -5,8 +5,8 @@ import "encoding/json"
 const MaxBitStringBytes = 15
 
 type BitString struct {
-	bitUsed uint8
-	value   []byte
+	BitUsed uint8  `json:"bit_used"`
+	Value   []byte `json:"value"`
 }
 
 func NewBitString(bufferSize int) *BitString {
@@ -14,14 +14,14 @@ func NewBitString(bufferSize int) *BitString {
 		bufferSize = MaxBitStringBytes
 	}
 	return &BitString{
-		bitUsed: 0,
-		value:   make([]byte, bufferSize),
+		BitUsed: 0,
+		Value:   make([]byte, bufferSize),
 	}
 }
 
-func (bs *BitString) Value() []bool {
-	value := make([]bool, bs.bitUsed)
-	for i := uint8(0); i < bs.bitUsed; i++ {
+func (bs *BitString) GetValue() []bool {
+	value := make([]bool, bs.BitUsed)
+	for i := uint8(0); i < bs.BitUsed; i++ {
 		if bs.Bit(i) {
 			value[i] = true
 		} else {
@@ -32,7 +32,7 @@ func (bs *BitString) Value() []bool {
 }
 
 func (bs *BitString) String() string {
-	bin, _ := json.Marshal(bs.Value())
+	bin, _ := json.Marshal(bs.GetValue())
 	return string(bin)
 }
 
@@ -41,14 +41,14 @@ func (bs *BitString) SetBit(bitNumber uint8, value bool) {
 	var bitMask uint8 = 1
 	if byteNumber < MaxBitStringBytes {
 		/* set max bits used */
-		if bs.bitUsed < (bitNumber + 1) {
-			bs.bitUsed = bitNumber + 1
+		if bs.BitUsed < (bitNumber + 1) {
+			bs.BitUsed = bitNumber + 1
 		}
 		bitMask = bitMask << (bitNumber - (byteNumber * 8))
 		if value {
-			bs.value[byteNumber] |= bitMask
+			bs.Value[byteNumber] |= bitMask
 		} else {
-			bs.value[byteNumber] &= ^bitMask
+			bs.Value[byteNumber] &= ^bitMask
 		}
 	}
 }
@@ -58,32 +58,32 @@ func (bs *BitString) Bit(bitNumber uint8) bool {
 	bitMask := uint8(1)
 	if bitNumber < (MaxBitStringBytes * 8) {
 		bitMask = bitMask << (bitNumber - (byteNumber * 8))
-		return (bs.value[byteNumber] & bitMask) != 0
+		return (bs.Value[byteNumber] & bitMask) != 0
 	}
 	return false
 }
 
-func (bs *BitString) BitUsed() uint8 {
-	return bs.bitUsed
+func (bs *BitString) GetBitUsed() uint8 {
+	return bs.BitUsed
 }
 
 func (bs *BitString) BytesUsed() uint8 {
-	if bs != nil && bs.bitUsed > 0 {
-		return (bs.bitUsed-1)/8 + 1
+	if bs != nil && bs.BitUsed > 0 {
+		return (bs.BitUsed-1)/8 + 1
 	}
 	return 0
 }
 
 func (bs *BitString) Byte(index uint8) byte {
 	if bs != nil && index < MaxBitStringBytes {
-		return bs.value[index]
+		return bs.Value[index]
 	}
 	return 0
 }
 
 func (bs *BitString) SetByte(index uint8, value byte) bool {
 	if bs != nil && index < MaxBitStringBytes {
-		bs.value[index] = value
+		bs.Value[index] = value
 		return true
 	}
 	return false
@@ -91,7 +91,7 @@ func (bs *BitString) SetByte(index uint8, value byte) bool {
 
 func (bs *BitString) SetBitsUsed(byteUsed uint8, bitsUnused uint8) bool {
 	if bs != nil {
-		bs.bitUsed = byteUsed*8 - bitsUnused
+		bs.BitUsed = byteUsed*8 - bitsUnused
 		return true
 	}
 	return false
@@ -99,7 +99,7 @@ func (bs *BitString) SetBitsUsed(byteUsed uint8, bitsUnused uint8) bool {
 
 func (bs *BitString) BitsCapacity() uint8 {
 	if bs != nil {
-		return uint8(len(bs.value) * 8)
+		return uint8(len(bs.Value) * 8)
 	}
 	return 0
 }

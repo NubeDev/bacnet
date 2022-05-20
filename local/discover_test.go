@@ -2,6 +2,8 @@ package local
 
 import (
 	"fmt"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
+
 	//"github.com/NubeDev/bacnet"
 
 	"testing"
@@ -22,7 +24,8 @@ func TestDiscover(t *testing.T) {
 		return
 	}
 
-	discover, err := device.DeviceDiscover(202)
-	fmt.Println(discover, err)
+	discover, err := device.DeviceDiscoverObjects(202)
+
+	pprint.PrintJOSN(discover)
 
 }
