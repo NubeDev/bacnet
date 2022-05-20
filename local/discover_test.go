@@ -24,8 +24,14 @@ func TestDiscover(t *testing.T) {
 		return
 	}
 
-	discover, err := device.DeviceDiscoverObjects(202)
+	//discover, err := device.DeviceDiscoverObjects(202)
 
-	pprint.PrintJOSN(discover)
+	//pprint.PrintJOSN(discover)
+
+	objects, err := device.DiscoverDeviceObjects()
+	if err != nil {
+		return
+	}
+	pprint.PrintJOSN(objects)
 
 }
