@@ -30,7 +30,6 @@ func New(local *Local) (*Local, error) {
 }
 
 func (local *Local) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
-
 	return local.bacnet.WhoIs(options)
 }
 

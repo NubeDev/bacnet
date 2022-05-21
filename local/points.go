@@ -15,6 +15,36 @@ type Point struct {
 }
 
 /*
+***** GET point details *****
+ */
+
+type PointDetails struct {
+	Name  string
+	Units uint32
+}
+
+//PointDetails use this when wanting to read point name, units and so on
+func (device *Device) PointDetails(pnt *Point) (resp *PointDetails, err error) {
+	resp = &PointDetails{}
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropUnits} //TODO add in more
+	for _, prop := range props {
+		obj.Prop = prop
+		read, _ := device.Read(obj)
+		switch prop {
+		case btypes.PropObjectName:
+			resp.Name = device.toStr(read)
+		case btypes.PropUnits:
+			resp.Units = device.toUint32(read)
+		}
+	}
+	return resp, nil
+}
+
+/*
 ***** READS *****
  */
 

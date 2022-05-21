@@ -8,24 +8,54 @@ Type bitSting
 This property indicates which standardized protocol services are supported by this device's protocol implementation.
 */
 
+//ServicesSupported eg: Name acknowledgeAlarm Number 0 Index 1
 type ServicesSupported struct {
-	Name   string
-	Number uint16
+	Name   string //name of service
+	Number uint16 //prop number
+	Index  int    //position in the bitString
 }
 
 var acknowledgeAlarm = ServicesSupported{
 	Name:   "acknowledgeAlarm",
 	Number: 0,
+	Index:  0,
 }
 
 var confirmedCOVNotification = ServicesSupported{
 	Name:   "confirmedCOVNotification",
 	Number: 1,
+	Index:  1,
+}
+
+var readProperty = ServicesSupported{
+	Name:   "readProperty",
+	Number: 12,
+	Index:  12,
+}
+
+var readPropertyMultiple = ServicesSupported{
+	Name:   "readPropertyMultiple",
+	Number: 14,
+	Index:  13,
+}
+var writeProperty = ServicesSupported{
+	Name:   "writeProperty",
+	Number: 15,
+	Index:  14,
+}
+var writePropertyMultiple = ServicesSupported{
+	Name:   "writePropertyMultiple",
+	Number: 16,
+	Index:  15,
 }
 
 var supportedList = map[ServicesSupported]string{
 	acknowledgeAlarm:         acknowledgeAlarm.Name,
 	confirmedCOVNotification: confirmedCOVNotification.Name,
+	readProperty:             readProperty.Name,
+	readPropertyMultiple:     readPropertyMultiple.Name,
+	writeProperty:            writeProperty.Name,
+	writePropertyMultiple:    writePropertyMultiple.Name,
 }
 
 func (support ServicesSupported) ListAll() map[ServicesSupported]string {
@@ -65,11 +95,11 @@ const (
 	removeListElement          = 9
 	createObject               = 10
 	deleteObject               = 11
-	readProperty               = 12
+	//readProperty               = 12
 	//readPropertyConditional':13      # removed in version 1 revision 12
-	readPropertyMultiple       = 14
-	writeProperty              = 15
-	writePropertyMultiple      = 16
+	//readPropertyMultiple       = 14
+	//writeProperty              = 15
+	//writePropertyMultiple      = 16
 	deviceCommunicationControl = 17
 	confirmedPrivateTransfer   = 18
 	confirmedTextMessage       = 19

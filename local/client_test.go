@@ -65,7 +65,7 @@ func TestWhoIs(t *testing.T) {
 
 }
 
-func TestRead(t *testing.T) {
+func TestReadObj(t *testing.T) {
 
 	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
@@ -81,9 +81,9 @@ func TestRead(t *testing.T) {
 	}
 
 	obj := &Object{
-		ObjectID:   202,
-		ObjectType: btypes.DeviceType,
-		Prop:       btypes.ProtocolServicesSupported,
+		ObjectID:   1,
+		ObjectType: btypes.AnalogInput,
+		Prop:       btypes.PropUnits,
 		ArrayIndex: btypes.ArrayAll, //btypes.ArrayAll
 
 	}
@@ -92,5 +92,24 @@ func TestRead(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(out)
 	//fmt.Println("DATA", out.Object.Properties[0].Data)
+
+}
+
+func TestWriteObj(t *testing.T) {
+
+	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	if err != nil {
+		fmt.Println("ERR-client", err)
+		return
+	}
+	defer localDevice.ClientClose()
+	go localDevice.ClientRun()
+
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	if err != nil {
+		return
+	}
+
+	device.Write(&Write{ObjectID: 1234, ObjectType: btypes.DeviceType, Prop: btypes.PropObjectName, WriteValue: "aidan test"})
 
 }
