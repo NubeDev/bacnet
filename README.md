@@ -1,6 +1,6 @@
 # bacnet
 
-bacnet is a client for bacnet written in go.
+bacnet client written in go.
 
 # Installation
 
@@ -90,6 +90,7 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --n
 ## Library
 
 - [x] Who Is
+- [x] Iam
 - [x] Read Property
 - [x] Read Multiple Property (beta)
 - [ ] Read Range
@@ -105,6 +106,7 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --n
 ## Command Line Interface
 
 - [x] Who Is
+- [x] Iam
 - [x] Read Property
 - [x] Read Multiple Property
 - [ ] Read Range

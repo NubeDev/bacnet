@@ -22,6 +22,7 @@ type Client interface {
 	io.Closer
 	ClientRun()
 	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
+	IAm(dest btypes.Address, iam btypes.IAm) error
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
 	ReadMultiProperty(dev btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error)
@@ -36,6 +37,11 @@ type client struct {
 	readBufferPool sync.Pool
 	log            *log.Logger
 }
+
+//func (c *client) IAm(dev btypes.Device) ([]btypes.Device, error) {
+//	//TODO implement me
+//	panic("implement me")
+//}
 
 type ClientBuilder struct {
 	DataLink   datalink.DataLink

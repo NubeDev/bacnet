@@ -45,7 +45,14 @@ func TestWhoIs(t *testing.T) {
 	defer client.ClientClose()
 	go client.ClientRun()
 
-	whoIs, err := client.bacnet.WhoIs(&bacnet.WhoIsOpts{NetworkNumber: 4})
+	wi := &bacnet.WhoIsOpts{
+		High:            22,
+		Low:             1,
+		GlobalBroadcast: true,
+		NetworkNumber:   0,
+	}
+
+	whoIs, err := client.Whois(wi)
 	if err != nil {
 		fmt.Println("ERR-whoIs", err)
 		return
@@ -54,32 +61,6 @@ func TestWhoIs(t *testing.T) {
 	for _, dev := range whoIs {
 		fmt.Println(dev.ID)
 		fmt.Println(dev.Vendor)
-	}
-
-}
-
-func TestReadObjects(t *testing.T) {
-
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
-	if err != nil {
-		fmt.Println("ERR-client", err)
-		return
-	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
-
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: uint32(MaxApdu), Segmentation: uint32(segmentation)})
-	if err != nil {
-		return
-	}
-
-	objects, err := device.DeviceObjects()
-	fmt.Println(objects, err)
-	if err != nil {
-		return
-	}
-	for i, a := range objects {
-		fmt.Println(i, a.Type)
 	}
 
 }

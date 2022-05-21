@@ -5,7 +5,7 @@ import (
 	"github.com/NubeDev/bacnet/encoding"
 )
 
-func (c *client) iAm(dest btypes.Address) error {
+func (c *client) IAm(dest btypes.Address, iam btypes.IAm) error {
 	npdu := &btypes.NPDU{
 		Version:               btypes.ProtocolVersion,
 		Destination:           &dest,
@@ -16,9 +16,7 @@ func (c *client) iAm(dest btypes.Address) error {
 	}
 	enc := encoding.NewEncoder()
 	enc.NPDU(npdu)
-
-	//	iams := []btypes.ObjectID{btypes.ObjectID{Instance: 1, Type: 5}}
-	//	enc.IAm(iams)
+	enc.IAm(iam)
 	_, err := c.Send(dest, npdu, enc.Bytes())
 	return err
 }

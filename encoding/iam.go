@@ -4,12 +4,19 @@ import (
 	"github.com/NubeDev/bacnet/btypes"
 )
 
-func (enc *Encoder) IAm(id btypes.IAm) error {
-	enc.AppData(id.ID, false)
-	enc.AppData(id.MaxApdu, false)
-	enc.AppData(id.Segmentation, false)
-	enc.AppData(id.Vendor, false)
-	return enc.Error()
+func (e *Encoder) IAm(id btypes.IAm) error {
+	apdu := btypes.APDU{
+		DataType:           btypes.UnconfirmedServiceRequest,
+		UnconfirmedService: btypes.ServiceUnconfirmedIAm,
+	}
+	e.write(apdu.DataType)
+	e.write(apdu.UnconfirmedService)
+
+	e.AppData(id.ID, false)
+	e.AppData(id.MaxApdu, false)
+	e.AppData(id.Segmentation, false)
+	e.AppData(id.Vendor, false)
+	return e.Error()
 }
 
 func (d *Decoder) IAm(id *btypes.IAm) error {
