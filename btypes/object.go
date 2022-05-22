@@ -39,20 +39,20 @@ const (
 )
 
 const (
-	AnalogInputStr       = "Analog Input"
-	AnalogOutputStr      = "Analog Output"
-	AnalogValueStr       = "Analog Value"
-	BinaryInputStr       = "Binary Input"
-	BinaryOutputStr      = "Binary Output"
-	BinaryValueStr       = "Binary Value"
+	AnalogInputStr       = "AnalogInput"
+	AnalogOutputStr      = "AnalogOutput"
+	AnalogValueStr       = "AnalogValue"
+	BinaryInputStr       = "BinaryInput"
+	BinaryOutputStr      = "BinaryOutput"
+	BinaryValueStr       = "BinaryValue"
 	Devicebtypestr       = "Device"
 	FileStr              = "File"
-	NotificationClassStr = "Notification Class"
-	MultiStateValueStr   = "Multi-State Value"
-	MultiStateInputStr   = "Multi-State Input"
-	MultiStateOutputStr  = "Multi-State Output"
-	TrendLogStr          = "Trend Log"
-	CharacterStringStr   = "Character String"
+	NotificationClassStr = "NotificationClass"
+	MultiStateValueStr   = "MultiStateValue"
+	MultiStateInputStr   = "MultiStateInput"
+	MultiStateOutputStr  = "MultiStateOutput"
+	TrendLogStr          = "TrendLog"
+	CharacterStringStr   = "CharacterString"
 )
 
 var objTypeMap = map[ObjectType]string{

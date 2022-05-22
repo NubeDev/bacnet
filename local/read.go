@@ -32,7 +32,6 @@ func (device *Device) Read(obj *Object) (out btypes.PropertyData, err error) {
 			},
 		},
 	}
-	fmt.Println("obj.ArrayIndex", obj.ArrayIndex)
 	out, err = device.bacnet.ReadProperty(device.Dev, rp)
 	if err != nil {
 		if rp.Object.Properties[0].Type == btypes.PropObjectList {

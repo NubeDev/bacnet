@@ -11,8 +11,6 @@ import (
 
 //DeviceObjects get device objects
 func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bool) (objectList []btypes.ObjectID, err error) {
-	fmt.Println(device.Segmentation)
-	fmt.Println(device.MaxApdu)
 	if checkAPDU { //check set the maxADPU and Segmentation
 		whoIs, err := device.bacnet.WhoIs(&bacnet.WhoIsOpts{
 			High: int(deviceID),
@@ -28,22 +26,19 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 			}
 		}
 	}
-	fmt.Println(device.Segmentation)
-	fmt.Println(device.MaxApdu)
 	//get object list
 	obj := &Object{
 		ObjectID:   deviceID,
 		ObjectType: btypes.DeviceType,
 		Prop:       btypes.PropObjectList,
-		ArrayIndex: 0, //btypes.ArrayAll
+		ArrayIndex: btypes.ArrayAll, //btypes.ArrayAll
 
 	}
 	out, err := device.Read(obj)
+	fmt.Println("DeviceObjects", err)
 	err = errors.New("testing")
 	if err != nil { //this is a device that would have a low maxADPU
-		if out.Object.Properties[0].Type == btypes.PropObjectList {
-			log.Errorln("DeviceObjects(): PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length err:", err)
-		}
+		fmt.Println("DeviceObjects, now read here", err)
 		return device.deviceObjectsBuilder(deviceID)
 
 	}
@@ -79,7 +74,6 @@ func (device *Device) deviceObjectsBuilder(deviceID btypes.ObjectInstance) (obje
 	var listLen = int(o)
 	for i := 1; i <= listLen; i++ {
 		obj.ArrayIndex = uint32(i)
-		println("try and read object lis", obj.ArrayIndex)
 		out, _ := device.Read(obj)
 		objectID := out.Object.Properties[0].Data.(btypes.ObjectID)
 		objectList = append(objectList, objectID)
