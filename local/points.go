@@ -3,15 +3,18 @@ package local
 import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/units"
 	"github.com/NubeDev/bacnet/helpers/data"
 )
 
 type Point struct {
-	ObjectID      btypes.ObjectInstance
-	ObjectType    btypes.ObjectType
-	WriteValue    interface{}
-	WriteNull     bool
-	WritePriority uint8
+	ObjectID         btypes.ObjectInstance `json:"object_id,omitempty"`
+	ObjectType       btypes.ObjectType     `json:"object_type,omitempty"`
+	WriteValue       interface{}
+	WriteNull        bool
+	WritePriority    uint8
+	ReadPresentValue bool
+	ReadPriority     bool
 }
 
 /*
@@ -19,26 +22,38 @@ type Point struct {
  */
 
 type PointDetails struct {
-	Name  string
-	Units uint32
+	Name       string                `json:"name,omitempty"`
+	Unit       uint32                `json:"unit,omitempty"`
+	UnitString string                `json:"unit_string,omitempty"`
+	ObjectID   btypes.ObjectInstance `json:"object_id,omitempty"`
+	ObjectType btypes.ObjectType     `json:"object_type,omitempty"`
+	PointType  string                `json:"point_type,omitempty"`
 }
 
 //PointDetails use this when wanting to read point name, units and so on
 func (device *Device) PointDetails(pnt *Point) (resp *PointDetails, err error) {
 	resp = &PointDetails{}
 	obj := &Object{
+		ObjectType: pnt.ObjectType,
 		ObjectID:   pnt.ObjectID,
 		ArrayIndex: bacnet.ArrayAll,
 	}
 	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropUnits} //TODO add in more
 	for _, prop := range props {
 		obj.Prop = prop
+		if device.isPointBool(pnt) && prop == btypes.PropUnits {
+			continue
+		}
 		read, _ := device.Read(obj)
+		resp.ObjectType = pnt.ObjectType
+		resp.PointType = pnt.ObjectType.String()
+		resp.ObjectID = pnt.ObjectID
 		switch prop {
 		case btypes.PropObjectName:
 			resp.Name = device.toStr(read)
 		case btypes.PropUnits:
-			resp.Units = device.toUint32(read)
+			resp.Unit = device.toUint32(read)
+			resp.UnitString = units.Unit.String(units.Unit(resp.Unit))
 		}
 	}
 	return resp, nil

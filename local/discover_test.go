@@ -24,7 +24,7 @@ func TestDiscover(t *testing.T) {
 		return
 	}
 
-	objects, err := device.DeviceObjects(202)
+	objects, err := device.DeviceObjects(202, true)
 	if err != nil {
 		return
 	}

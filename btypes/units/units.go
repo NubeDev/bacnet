@@ -1,6 +1,13 @@
 package units
 
 //stolen :-) from https://github.com/REQUEA/bacnet
+//units prop number 117
+
+/*
+https://go.dev/blog/generate
+sudo apt install golang-golang-x-tools
+go generate
+*/
 
 type Unit uint16
 

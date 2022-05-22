@@ -2,13 +2,30 @@ package local
 
 import (
 	"fmt"
+	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/helpers/data"
 	log "github.com/sirupsen/logrus"
 )
 
 //DeviceObjects get device objects
-func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance) (objectList []btypes.ObjectID, err error) {
+func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bool) (objectList []btypes.ObjectID, err error) {
+
+	if checkAPDU { //check set the maxADPU and Segmentation
+		whoIs, err := device.bacnet.WhoIs(&bacnet.WhoIsOpts{
+			High: int(deviceID),
+			Low:  int(deviceID),
+		})
+		if err != nil {
+			return nil, err
+		}
+		for _, dev := range whoIs {
+			if dev.ID.Instance == deviceID {
+				device.MaxApdu = dev.MaxApdu
+				device.Segmentation = uint32(dev.Segmentation)
+			}
+		}
+	}
 	//get object list
 	obj := &Object{
 		ObjectID:   deviceID,

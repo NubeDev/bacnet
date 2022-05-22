@@ -19,7 +19,7 @@ type DevicePoints struct {
 //with the object list do a point's discovery, get the name, units and so on
 func (device *Device) GetDevicePoints(deviceID btypes.ObjectInstance) (resp []*PointDetails, err error) {
 	resp = []*PointDetails{}
-	list, err := device.DeviceObjects(deviceID)
+	list, err := device.DeviceObjects(deviceID, true)
 	if err != nil {
 		return nil, err
 	}

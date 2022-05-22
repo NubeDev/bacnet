@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
-	log "github.com/sirupsen/logrus"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
+	"github.com/NubeDev/bacnet/local"
 	"github.com/spf13/cobra"
 	"strconv"
 )
@@ -22,6 +22,9 @@ var (
 	arrayIndex        uint32
 	propertyType      string
 	listProperties    bool
+	segmentation      int
+	maxADPU           int
+	getDevicePoints   bool
 )
 
 // readCmd represents the read command
@@ -38,36 +41,27 @@ var readCmd = &cobra.Command{
 }
 
 func readProp(cmd *cobra.Command, args []string) {
-	if listProperties {
-		btypes.PrintAllProperties()
+
+	localDevice, err := local.New(&local.Local{Interface: Interface, Port: Port})
+	if err != nil {
+		fmt.Println("ERR-client", err)
 		return
 	}
-	cb := &bacnet.ClientBuilder{
-		Interface: Interface,
-		Port:      Port,
-	}
-	c, _ := bacnet.NewClient(cb)
-	defer c.Close()
-	go c.ClientRun()
+	defer localDevice.ClientClose()
+	go localDevice.ClientRun()
 
-	ip, err := ip2bytes.New(deviceIP, uint16(devicePort))
+	device, err := local.NewDevice(localDevice, &local.Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: deviceHardwareMac, MaxApdu: uint32(maxADPU), Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
 
-	addr := btypes.Address{
-		Net: uint16(networkNumber),
-		Mac: ip,
-		Adr: []uint8{uint8(deviceHardwareMac)},
-	}
-	object := btypes.ObjectID{
-		Type:     8,
-		Instance: btypes.ObjectInstance(deviceID),
-	}
-
-	dest := btypes.Device{
-		ID:   object,
-		Addr: addr,
+	if getDevicePoints {
+		points, err := device.GetDevicePoints(btypes.ObjectInstance(deviceID))
+		if err != nil {
+			return
+		}
+		pprint.PrintJOSN(points)
+		return
 	}
 
 	var propInt btypes.PropertyType
@@ -78,40 +72,16 @@ func readProp(cmd *cobra.Command, args []string) {
 		propInt, err = btypes.Get(propertyType)
 	}
 
-	if btypes.IsDeviceProperty(propInt) {
-		objectType = 8
-	}
+	obj := &local.Object{
+		ObjectID:   btypes.ObjectInstance(objectID),
+		ObjectType: btypes.ObjectType(objectType),
+		Prop:       propInt,
+		ArrayIndex: arrayIndex, //btypes.ArrayAll
 
-	if err != nil {
-		log.Fatal(err)
 	}
-
-	rp := btypes.PropertyData{
-		Object: btypes.Object{
-			ID: btypes.ObjectID{
-				Type:     btypes.ObjectType(objectType),
-				Instance: btypes.ObjectInstance(objectID),
-			},
-			Properties: []btypes.Property{
-				{
-					Type:       propInt,
-					ArrayIndex: arrayIndex,
-				},
-			},
-		},
-	}
-	out, err := c.ReadProperty(dest, rp)
-	if err != nil {
-		if rp.Object.Properties[0].Type == btypes.PropObjectList {
-			log.Error("Note: PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length")
-		}
-		log.Fatal(err)
-	}
-	if len(out.Object.Properties) == 0 {
-		fmt.Println("No value returned")
-		return
-	}
-	fmt.Println(out.Object.Properties[0].Data)
+	read, err := device.Read(obj)
+	fmt.Println(err)
+	fmt.Println(read)
 }
 func init() {
 	// Descriptions are kept separate for legibility purposes.
@@ -124,18 +94,19 @@ func init() {
 	RootCmd.AddCommand(readCmd)
 
 	// Pass flags to children
-	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
+	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "", 202, "device id")
 	readCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
 	readCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
 	readCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")
 	readCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")
-	readCmd.Flags().IntVarP(&objectID, "objectID", "o", 1234, "object ID")
-	readCmd.Flags().IntVarP(&objectType, "objectType", "j", 8, "object type")
-	readCmd.Flags().StringVarP(&propertyType, "property", "t",
-		btypes.ObjectNameStr, propertyTypeDescr)
-
+	readCmd.Flags().IntVarP(&maxADPU, "adpu", "", 0, "device max adpu")
+	readCmd.Flags().IntVarP(&segmentation, "seg", "", 0, "device segmentation")
+	readCmd.Flags().IntVarP(&objectID, "objectID", "", 202, "object ID")
+	readCmd.Flags().IntVarP(&objectType, "objectType", "", 8, "object type")
+	readCmd.Flags().StringVarP(&propertyType, "property", "", btypes.ObjectNameStr, propertyTypeDescr)
 	readCmd.Flags().Uint32Var(&arrayIndex, "index", bacnet.ArrayAll, "Which position to return.")
 
-	readCmd.PersistentFlags().BoolVarP(&listProperties, "list", "l", false,
-		listPropertiesDescr)
+	readCmd.PersistentFlags().BoolVarP(&listProperties, "list", "l", false, listPropertiesDescr)
+
+	readCmd.PersistentFlags().BoolVarP(&getDevicePoints, "device-points", "", false, "get device points list")
 }

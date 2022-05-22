@@ -2,7 +2,6 @@ package local
 
 import (
 	"github.com/NubeDev/bacnet"
-	"github.com/NubeDev/bacnet/btypes"
 )
 
 type Local struct {
@@ -27,10 +26,6 @@ func New(local *Local) (*Local, error) {
 	}
 	local.bacnet = bc
 	return local, nil
-}
-
-func (local *Local) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
-	return local.bacnet.WhoIs(options)
 }
 
 func (local *Local) ClientClose() {

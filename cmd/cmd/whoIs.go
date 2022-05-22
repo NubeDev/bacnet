@@ -1,17 +1,17 @@
 package cmd
 
 import (
-	"encoding/json"
+	"fmt"
 	"github.com/NubeDev/bacnet"
 	pprint "github.com/NubeDev/bacnet/helpers/print"
+	"github.com/NubeDev/bacnet/local"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 // Flags
 var startRange int
 var endRange int
+
 var outputFilename string
 
 // whoIsCmd represents the whoIs command
@@ -25,49 +25,34 @@ var whoIsCmd = &cobra.Command{
 
 func main(cmd *cobra.Command, args []string) {
 
-	cb := &bacnet.ClientBuilder{
-		Interface: Interface,
-		Port:      Port,
-	}
-	c, _ := bacnet.NewClient(cb)
-
-	defer c.Close()
-	go c.ClientRun()
-	wh := &bacnet.WhoIsOpts{
-		GlobalBroadcast: true,
-		NetworkNumber:   0,
-	}
-	wh.Low = startRange
-	wh.High = endRange
-	devices, err := c.WhoIs(wh)
+	client, err := local.New(&local.Local{Interface: Interface, Port: Port})
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("ERR-client", err)
+		return
+	}
+	defer client.ClientClose()
+	go client.ClientRun()
+
+	wi := &bacnet.WhoIsOpts{
+		High:            endRange,
+		Low:             startRange,
+		GlobalBroadcast: true,
+		NetworkNumber:   uint16(networkNumber),
 	}
 
-	for _, device := range devices {
-		pprint.Print(device)
+	whoIs, err := client.Whois(wi)
+	if err != nil {
+		fmt.Println("ERR-whoIs", err)
+		return
 	}
 
-	ioWriter := os.Stdout
-	// Check to see if a file was passed to us
-	if len(outputFilename) > 0 {
-		ioWriter, err = os.Create(outputFilename)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer ioWriter.Close()
-	}
-	// Pretty Print!
-	w := json.NewEncoder(ioWriter)
-	w.SetIndent("", "    ")
-	//pprint.Print(ids)
-	//w.Encode(ids) //TODO uncomment this to pretty print as json
-
+	pprint.PrintJOSN(whoIs)
 }
 
 func init() {
 	RootCmd.AddCommand(whoIsCmd)
 	whoIsCmd.Flags().IntVarP(&startRange, "start", "s", -1, "Start range of discovery")
 	whoIsCmd.Flags().IntVarP(&endRange, "end", "e", int(0xBAC0), "End range of discovery")
+	whoIsCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "network number")
 	whoIsCmd.Flags().StringVarP(&outputFilename, "out", "o", "", "Output results into the given filename in json structure.")
 }
