@@ -3,6 +3,7 @@ package bacnet
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/segmentation"
 	ip2bytes "github.com/NubeDev/bacnet/helpers/ipbytes"
 	pprint "github.com/NubeDev/bacnet/helpers/print"
 
@@ -38,7 +39,7 @@ func TestIam(t *testing.T) {
 	iam := btypes.IAm{
 		ID:           btypes.ObjectID{Instance: 33, Type: 8},
 		MaxApdu:      btypes.MaxAPDU480,
-		Segmentation: btypes.SegmentedBoth,
+		Segmentation: segmentation.SegmentedBoth,
 		Vendor:       22,
 		Addr:         addr,
 	}

@@ -1,4 +1,4 @@
-package btypes
+package services
 
 import "fmt"
 
@@ -8,48 +8,48 @@ Type bitSting
 This property indicates which standardized protocol services are supported by this device's protocol implementation.
 */
 
-//ServicesSupported eg: Name acknowledgeAlarm Number 0 Index 1
-type ServicesSupported struct {
+//Supported eg: Name acknowledgeAlarm Number 0 Index 1
+type Supported struct {
 	Name   string //name of service
 	Number uint16 //prop number
 	Index  int    //position in the bitString
 }
 
-var acknowledgeAlarm = ServicesSupported{
+var acknowledgeAlarm = Supported{
 	Name:   "acknowledgeAlarm",
 	Number: 0,
 	Index:  0,
 }
 
-var confirmedCOVNotification = ServicesSupported{
+var confirmedCOVNotification = Supported{
 	Name:   "confirmedCOVNotification",
 	Number: 1,
 	Index:  1,
 }
 
-var readProperty = ServicesSupported{
+var readProperty = Supported{
 	Name:   "readProperty",
 	Number: 12,
 	Index:  12,
 }
 
-var readPropertyMultiple = ServicesSupported{
+var readPropertyMultiple = Supported{
 	Name:   "readPropertyMultiple",
 	Number: 14,
 	Index:  13,
 }
-var writeProperty = ServicesSupported{
+var writeProperty = Supported{
 	Name:   "writeProperty",
 	Number: 15,
 	Index:  14,
 }
-var writePropertyMultiple = ServicesSupported{
+var writePropertyMultiple = Supported{
 	Name:   "writePropertyMultiple",
 	Number: 16,
 	Index:  15,
 }
 
-var supportedList = map[ServicesSupported]string{
+var supportedList = map[Supported]string{
 	acknowledgeAlarm:         acknowledgeAlarm.Name,
 	confirmedCOVNotification: confirmedCOVNotification.Name,
 	readProperty:             readProperty.Name,
@@ -58,11 +58,11 @@ var supportedList = map[ServicesSupported]string{
 	writePropertyMultiple:    writePropertyMultiple.Name,
 }
 
-func (support ServicesSupported) ListAll() map[ServicesSupported]string {
+func (support Supported) ListAll() map[Supported]string {
 	return supportedList
 }
 
-func (support ServicesSupported) GetType(s string) *ServicesSupported {
+func (support Supported) GetType(s string) *Supported {
 	for typ, str := range supportedList {
 		if s == str {
 			return &typ
@@ -72,7 +72,7 @@ func (support ServicesSupported) GetType(s string) *ServicesSupported {
 
 }
 
-func (support ServicesSupported) GetString(t ServicesSupported) string {
+func (support Supported) GetString(t Supported) string {
 	s, ok := supportedList[t]
 	if !ok {
 		return fmt.Sprintf("Unknown (%s)", t.Name)

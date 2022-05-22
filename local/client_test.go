@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	segmentation2 "github.com/NubeDev/bacnet/btypes/segmentation"
 
 	//"github.com/NubeDev/bacnet"
 
@@ -16,7 +17,7 @@ var deviceIP = "192.168.15.202"
 var deviceID = 202
 var networkNumber = 0
 var macMSTP = 0
-var segmentation = btypes.SegmentedBoth
+var segmentation = segmentation2.SegmentedBoth
 var MaxApdu uint32 = btypes.MaxAPDU1476
 
 /*

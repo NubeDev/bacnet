@@ -1,5 +1,7 @@
 package btypes
 
+import "github.com/NubeDev/bacnet/btypes/ndpu"
+
 type NPDUPriority byte
 
 const ProtocolVersion uint8 = 1
@@ -24,7 +26,7 @@ type NPDU struct {
 	VendorId uint16
 
 	IsNetworkLayerMessage   bool
-	NetworkLayerMessageType uint8
+	NetworkLayerMessageType ndpu.NetworkMessageType
 	ExpectingReply          bool
 	Priority                NPDUPriority
 	HopCount                uint8

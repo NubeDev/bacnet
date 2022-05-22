@@ -108,8 +108,8 @@ func (t ObjectType) String() string {
 type ObjectInstance uint32
 
 type ObjectID struct {
-	Type     ObjectType
-	Instance ObjectInstance
+	Type     ObjectType     `json:"type"`
+	Instance ObjectInstance `json:"instance"`
 }
 
 // String returns a pretty print of the ObjectID structure

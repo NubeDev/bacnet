@@ -1,4 +1,4 @@
-package btypes
+package null
 
 // Null is used when a value is empty.
 type Null struct{}

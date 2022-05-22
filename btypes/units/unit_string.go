@@ -4,7 +4,7 @@ package units
 
 import "strconv"
 
-func get() {
+func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
@@ -234,7 +234,6 @@ func get() {
 	_ = x[Ph-234]
 	_ = x[GramsPerSquareMeter-235]
 	_ = x[MinutesPerDegreeKelvin-236]
-
 }
 
 const (

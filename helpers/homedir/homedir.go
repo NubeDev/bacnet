@@ -76,7 +76,7 @@ func Expand(path string) (string, error) {
 	return filepath.Join(dir, path[1:]), nil
 }
 
-// Reset clears the cache, forcing the next call to Dir to re-detect
+// Reset clears the store, forcing the next call to Dir to re-detect
 // the home directory. This generally never has to be called, but can be
 // useful in tests if you're modifying the home directory via the HOME
 // env var or something.

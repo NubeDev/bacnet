@@ -6,5 +6,6 @@ import (
 )
 
 func (local *Local) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
-	return local.bacnet.WhoIs(options)
+	resp, err := local.bacnet.WhoIs(options)
+	return resp, err
 }

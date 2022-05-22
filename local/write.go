@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/null"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -36,7 +37,7 @@ func (device *Device) Write(write *Write) error {
 	}
 
 	if write.WriteNull {
-		writeValue = btypes.Null{}
+		writeValue = null.Null{}
 	} else {
 		switch writeValue.(type) {
 		case uint32:

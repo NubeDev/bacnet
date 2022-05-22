@@ -38,11 +38,6 @@ type client struct {
 	log            *log.Logger
 }
 
-//func (c *client) IAm(dev btypes.Device) ([]btypes.Device, error) {
-//	//TODO implement me
-//	panic("implement me")
-//}
-
 type ClientBuilder struct {
 	DataLink   datalink.DataLink
 	Interface  string

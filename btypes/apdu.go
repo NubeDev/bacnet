@@ -2,16 +2,8 @@ package btypes
 
 import "fmt"
 
-type ServiceConfirmed uint8
-type ServiceUnconfirmed uint8
-
-const MaxAPDU128 = 128
-const MaxAPDU206 = 206
-const MaxAPDU480 = 480
-const MaxAPDU1024 = 1024
-const MaxAPDU1476 = 1476
-
 /*
+Max ADPU sizes
 0 = 50
 1 = 128
 2 = 206
@@ -20,9 +12,15 @@ const MaxAPDU1476 = 1476
 5 = 1476
 */
 
-const MaxAPDUmstp = 480
-const MaxAPDUOverIP = 1476
-const MaxAPDU = MaxAPDUOverIP
+const MaxAPDU = 1476
+const MaxAPDU128 = 128
+const MaxAPDU206 = 206
+const MaxAPDU480 = 480
+const MaxAPDU1024 = 1024
+const MaxAPDU1476 = 1476
+
+type ServiceConfirmed uint8
+type ServiceUnconfirmed uint8
 
 const (
 	ServiceUnconfirmedIAm               ServiceUnconfirmed = 0

@@ -3,7 +3,6 @@ package encoding
 import (
 	"bytes"
 	"encoding/binary"
-
 	"github.com/NubeDev/bacnet/btypes"
 )
 

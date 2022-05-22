@@ -12,7 +12,7 @@ type Local struct {
 	bacnet     bacnet.Client
 }
 
-// New returns a new instance of the nube common apis
+// New returns a new instance of bacnet network
 func New(local *Local) (*Local, error) {
 	cb := &bacnet.ClientBuilder{
 		Interface:  local.Interface,

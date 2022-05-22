@@ -9,27 +9,27 @@ import (
 type Enumerated uint32
 
 type IAm struct {
-	ID           ObjectID
-	MaxApdu      uint32
-	Segmentation Enumerated
-	Vendor       uint32
-	Addr         Address
+	ID           ObjectID   `json:"object_id"`
+	MaxApdu      uint32     `json:"max_apdu"`
+	Segmentation Enumerated `json:"segmentation"`
+	Vendor       uint32     `json:"vendor"`
+	Addr         Address    `json:"addr"`
 }
 
 type Device struct {
-	ID            ObjectID
-	DeviceID      int
-	Ip            string
-	Port          int
-	NetworkNumber int
-	MacMSTP       int
-	MaxApdu       uint32 //maxApduLengthAccepted	62
-	Segmentation  Enumerated
-	Vendor        uint32
-	Addr          Address
-	Objects       ObjectMap
-	SupportsRPM   bool //support read prob multiple
-	SupportsWPM   bool //support read prob multiple
+	ID            ObjectID   `json:"object_id"`
+	DeviceID      int        `json:"device_id"`
+	Ip            string     `json:"ip"`
+	Port          int        `json:"port"`
+	NetworkNumber int        `json:"network_number"`
+	MacMSTP       int        `json:"mac_mstp"`
+	MaxApdu       uint32     `json:"max_apdu"` //maxApduLengthAccepted	62
+	Segmentation  Enumerated `json:"segmentation"`
+	Vendor        uint32     `json:"vendor"`
+	Addr          Address    `json:"-"`
+	Objects       ObjectMap  `json:"objects"`
+	SupportsRPM   bool       `json:"supports_rpm"` //support read prob multiple
+	SupportsWPM   bool       `json:"supports_wpm"` //support read prob multiple
 }
 
 /*

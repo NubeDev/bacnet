@@ -3,6 +3,7 @@ package encoding
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/null"
 )
 
 const (
@@ -178,7 +179,7 @@ func (d *Decoder) double(x *float64) {
 func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
 	//if null used for sending null on point write to prop 87
 	switch i.(type) {
-	case btypes.Null:
+	case null.Null:
 		e.tag(tagInfo{ID: tagNull, Context: appLayerContext})
 		return nil
 	}
@@ -229,7 +230,7 @@ func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
 	case btypes.ObjectID:
 		e.tag(tagInfo{ID: tagObjectID, Context: appLayerContext, Value: objectIDLen})
 		e.objectId(val.Type, val.Instance)
-	case btypes.Null:
+	case null.Null:
 		e.tag(tagInfo{ID: tagNull, Context: appLayerContext})
 	default:
 		err := fmt.Errorf("Unknown type %T", i)
@@ -243,7 +244,7 @@ func (e *Encoder) AppData(i interface{}, typeBVBO bool) error {
 func (d *Decoder) AppDataOfTag(tag uint8, len int) (interface{}, error) {
 	switch tag {
 	case tagNull:
-		return btypes.Null{}, nil
+		return null.Null{}, nil
 	case tagBool:
 		// Originally this was in C so non 0 values are considered
 		// true

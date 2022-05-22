@@ -1,4 +1,4 @@
-package btypes
+package services
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 func TestSupported(t *testing.T) {
 
-	ss := ServicesSupported{}
+	ss := Supported{}
 	for supported := range ss.ListAll() {
 		fmt.Println(supported)
 	}
