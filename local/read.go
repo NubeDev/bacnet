@@ -37,7 +37,7 @@ func (device *Device) Read(obj *Object) (out btypes.PropertyData, err error) {
 		if rp.Object.Properties[0].Type == btypes.PropObjectList {
 			log.Error("Note: PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length")
 		}
-		//return out, nil
+		return out, nil
 	}
 	if len(out.Object.Properties) == 0 {
 		fmt.Println("No value returned")

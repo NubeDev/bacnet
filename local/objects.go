@@ -1,16 +1,19 @@
 package local
 
 import (
+	"errors"
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/helpers/data"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	log "github.com/sirupsen/logrus"
 )
 
 //DeviceObjects get device objects
 func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bool) (objectList []btypes.ObjectID, err error) {
-
+	fmt.Println(device.Segmentation)
+	fmt.Println(device.MaxApdu)
 	if checkAPDU { //check set the maxADPU and Segmentation
 		whoIs, err := device.bacnet.WhoIs(&bacnet.WhoIsOpts{
 			High: int(deviceID),
@@ -26,6 +29,8 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 			}
 		}
 	}
+	fmt.Println(device.Segmentation)
+	fmt.Println(device.MaxApdu)
 	//get object list
 	obj := &Object{
 		ObjectID:   deviceID,
@@ -35,9 +40,10 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 
 	}
 	out, err := device.Read(obj)
+	err = errors.New("testing")
 	if err != nil { //this is a device that would have a low maxADPU
 		if out.Object.Properties[0].Type == btypes.PropObjectList {
-			log.Error("Note: PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length")
+			log.Errorln("DeviceObjects(): PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length err:", err)
 		}
 		return device.deviceObjectsBuilder(deviceID)
 
@@ -66,12 +72,15 @@ func (device *Device) deviceObjectsBuilder(deviceID btypes.ObjectInstance) (obje
 	}
 	out, err := device.Read(obj)
 	if err != nil {
+		log.Errorln("failed to read object list in deviceObjectsBuilder() err:", err)
 		return nil, err
 	}
 	_, o := data.ToUint32(out)
 	var listLen = int(o)
 	for i := 1; i <= listLen; i++ {
 		obj.ArrayIndex = uint32(i)
+		println("try and read object lis")
+		pprint.PrintJOSN(obj)
 		out, _ := device.Read(obj)
 		objectID := out.Object.Properties[0].Data.(btypes.ObjectID)
 		objectList = append(objectList, objectID)
