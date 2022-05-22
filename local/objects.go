@@ -35,7 +35,7 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 		ObjectID:   deviceID,
 		ObjectType: btypes.DeviceType,
 		Prop:       btypes.PropObjectList,
-		ArrayIndex: btypes.ArrayAll, //btypes.ArrayAll
+		ArrayIndex: 0, //btypes.ArrayAll
 
 	}
 	out, err := device.Read(obj)
