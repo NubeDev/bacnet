@@ -1,6 +1,7 @@
 package encoding
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -27,7 +28,7 @@ func subTestNPDU(t *testing.T, n btypes.NPDU) func(t *testing.T) {
 		d := NewDecoder(b)
 
 		var out btypes.NPDU
-		err := d.NPDU(&out)
+		_, err := d.NPDU(&out)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -418,10 +419,14 @@ func TestBVLC(t *testing.T) {
 func TestError(t *testing.T) {
 	var npdu btypes.NPDU
 	var apdu btypes.APDU
-	raw := []byte{1, 0, 80, 1, 12, 145, 1, 145, 31}
+	raw := []byte{129, 11, 0, 11, 1, 128, 1, 19, 236, 20, 80}
+	//[129 11 0 11 1 128 1 19 236 20 80]
+	//1, 0, 80, 1, 12, 145, 1, 145, 31
 
 	dec := NewDecoder(raw)
-	err := dec.NPDU(&npdu)
+	list, err := dec.NPDU(&npdu)
+
+	fmt.Println(list)
 	if err != nil {
 		t.Fatal(err)
 	}
