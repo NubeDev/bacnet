@@ -131,7 +131,6 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 	var header btypes.BVLC
 	var npdu btypes.NPDU
 	var apdu btypes.APDU
-
 	dec := encoding.NewDecoder(b)
 	err := dec.BVLC(&header)
 	if err != nil {
