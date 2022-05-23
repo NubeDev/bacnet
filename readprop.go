@@ -41,7 +41,7 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 	for count := 0; err != nil && count < 2; count++ {
 		var b []byte
 		var out btypes.PropertyData
-		_, err = c.Send(device.Addr, npdu, enc.Bytes())
+		_, err = c.Send(device.Addr, npdu, enc.Bytes(), nil)
 		if err != nil {
 			log.Print(err)
 			continue

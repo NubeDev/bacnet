@@ -68,7 +68,7 @@ func (c *client) ReadMultiProperty(device btypes.Device, rp btypes.MultiplePrope
 
 func (c *client) sendReadMultipleProperty(id int, dev btypes.Device, npdu *btypes.NPDU, request []byte) (btypes.MultiplePropertyData, error) {
 	var out btypes.MultiplePropertyData
-	_, err := c.Send(dev.Addr, npdu, request)
+	_, err := c.Send(dev.Addr, npdu, request, nil)
 	if err != nil {
 		return out, err
 	}

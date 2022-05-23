@@ -2,6 +2,7 @@ package bacnet
 
 import (
 	"fmt"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"go/build"
 	"os"
 	"testing"
@@ -24,31 +25,10 @@ func TestIam(t *testing.T) {
 	defer c.Close()
 	go c.ClientRun()
 
-	c.WhatIsNetworkNumber()
+	//resp := c.WhatIsNetworkNumber()
 
-	//ip, err := ip2bytes.New(deviceIP, uint16(47808))
-	//if err != nil {
-	//	return
-	//}
-	//
-	//addr := btypes.Address{
-	//	Mac: ip,
-	//}
-	//
-	//iam := btypes.IAm{
-	//	ID:           btypes.ObjectID{Instance: 123, Type: 8},
-	//	MaxApdu:      btypes.MaxAPDU480,
-	//	Segmentation: btypes.Enumerated(segmentation.SegmentedBoth),
-	//	Vendor:       234,
-	//	Addr:         addr,
-	//}
-	//
-	//pprint.Print(addr)
-	//
-	//err = c.IAm(addr, iam)
-	//fmt.Println(err)
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
+	resp := c.WhoIsRouterToNetwork()
+	fmt.Println("WhoIsRouterToNetwork")
+	pprint.Print(resp)
 
 }

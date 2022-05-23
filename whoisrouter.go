@@ -8,15 +8,10 @@ import (
 )
 
 /*
-Is in beta, works but needs a decoder
-
-in bacnet.Send() need to set the header.Function as btypes.BacFuncBroadcast
-
-in bacnet.handleMsg() the npdu.IsNetworkLayerMessage is always rejected so this needs to be updated
-
+Is in beta
 */
 
-func (c *client) WhatIsNetworkNumber() (resp []*btypes.Address) {
+func (c *client) WhoIsRouterToNetwork() (resp *[]btypes.Address) {
 	var err error
 	dest := *c.dataLink.GetBroadcastAddress()
 	enc := encoding.NewEncoder()
@@ -25,7 +20,7 @@ func (c *client) WhatIsNetworkNumber() (resp []*btypes.Address) {
 		Destination:             &dest,
 		Source:                  c.dataLink.GetMyAddress(),
 		IsNetworkLayerMessage:   true,
-		NetworkLayerMessageType: ndpu.WhatIsNetworkNumber,
+		NetworkLayerMessageType: ndpu.WhoIsRouterToNetwork,
 		// We are not expecting a direct reply from a single destination
 		ExpectingReply: false,
 		Priority:       btypes.Normal,
@@ -47,16 +42,16 @@ func (c *client) WhatIsNetworkNumber() (resp []*btypes.Address) {
 	if err != nil {
 
 	}
-
-	for _, v := range values {
-		r, ok := v.(btypes.NPDU)
-		if r.Source != nil {
-			resp = append(resp, r.Source)
-		}
+	var list []btypes.Address
+	for _, addresses := range values {
+		r, ok := addresses.([]btypes.Address)
 		if !ok {
 			continue
 		}
+		for _, addr := range r {
+			list = append(list, addr)
+		}
 	}
-	return resp
+	return &list
 
 }
