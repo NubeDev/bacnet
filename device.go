@@ -22,6 +22,7 @@ type Client interface {
 	io.Closer
 	ClientRun()
 	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
+	WhatIsNetworkNumber()
 	IAm(dest btypes.Address, iam btypes.IAm) error
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
@@ -140,6 +141,7 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 		c.log.Error(err)
 		return
 	}
+
 	if header.Function == btypes.BacFuncBroadcast || header.Function == btypes.BacFuncUnicast || header.Function == btypes.BacFuncForwardedNPDU {
 		// Remove the header information
 		b = b[mtuHeaderLength:]
@@ -219,7 +221,7 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 			}
 		default:
 			// Ignore it
-			//log.WithFields(log.Fields{"raw": b}).Debug("An ignored packet went through")
+			log.WithFields(log.Fields{"raw": b}).Debug("An ignored packet went through")
 		}
 	}
 
@@ -250,6 +252,7 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int,
 		// SET UNICAST FLAG
 		header.Function = btypes.BacFuncUnicast
 	}
+	//header.Function = btypes.BacFuncBroadcast //TODO this needs to be set when sending a What-is-network-number 0x12
 	header.Length = uint16(mtuHeaderLength + len(data))
 	header.Data = data
 	e := encoding.NewEncoder()
@@ -257,7 +260,7 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int,
 	if err != nil {
 		return 0, err
 	}
-	// use default udp type, src = local address (nil)
+	// use default udp type, src = network address (nil)
 	return c.dataLink.Send(e.Bytes(), npdu, &dest)
 }
 

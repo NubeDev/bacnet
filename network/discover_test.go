@@ -1,12 +1,15 @@
-package local
+package network
 
 import (
 	"fmt"
-	"github.com/NubeDev/bacnet/btypes"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
+
+	//"github.com/NubeDev/bacnet"
+
 	"testing"
 )
 
-func TestPointDetails(t *testing.T) {
+func TestDiscover(t *testing.T) {
 
 	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
@@ -21,21 +24,15 @@ func TestPointDetails(t *testing.T) {
 		return
 	}
 
-	pnt := &Point{
-		ObjectID:   2,
-		ObjectType: btypes.AnalogInput,
-	}
-
-	readFloat64, err := device.PointDetails(pnt)
+	objects, err := device.DeviceObjects(202, true)
 	if err != nil {
-		//return
+		return
 	}
-
-	fmt.Println(readFloat64, err)
+	pprint.PrintJOSN(objects)
 
 }
 
-func TestRead(t *testing.T) {
+func TestGetPointsList(t *testing.T) {
 
 	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
 	if err != nil {
@@ -50,16 +47,10 @@ func TestRead(t *testing.T) {
 		return
 	}
 
-	pnt := &Point{
-		ObjectID:   2,
-		ObjectType: btypes.AnalogOutput,
-	}
-
-	readFloat64, err := device.PointReadFloat64(pnt)
+	objects, err := device.GetDevicePoints(202)
 	if err != nil {
 		return
 	}
-
-	fmt.Println(readFloat64, err)
+	pprint.PrintJOSN(objects)
 
 }

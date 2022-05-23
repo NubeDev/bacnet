@@ -1,4 +1,4 @@
-package local
+package network
 
 import (
 	"fmt"
@@ -47,8 +47,8 @@ func TestWhoIs(t *testing.T) {
 	go client.ClientRun()
 
 	wi := &bacnet.WhoIsOpts{
-		High:            22,
-		Low:             1,
+		High:            0,
+		Low:             0,
 		GlobalBroadcast: true,
 		NetworkNumber:   0,
 	}

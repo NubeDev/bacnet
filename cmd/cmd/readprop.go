@@ -5,7 +5,7 @@ import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	pprint "github.com/NubeDev/bacnet/helpers/print"
-	"github.com/NubeDev/bacnet/local"
+	"github.com/NubeDev/bacnet/network"
 	"github.com/spf13/cobra"
 	"strconv"
 )
@@ -42,7 +42,7 @@ var readCmd = &cobra.Command{
 
 func readProp(cmd *cobra.Command, args []string) {
 
-	localDevice, err := local.New(&local.Local{Interface: Interface, Port: Port})
+	localDevice, err := network.New(&network.Local{Interface: Interface, Port: Port})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
@@ -50,7 +50,7 @@ func readProp(cmd *cobra.Command, args []string) {
 	defer localDevice.ClientClose()
 	go localDevice.ClientRun()
 
-	device, err := local.NewDevice(localDevice, &local.Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: deviceHardwareMac, MaxApdu: uint32(maxADPU), Segmentation: uint32(segmentation)})
+	device, err := network.NewDevice(localDevice, &network.Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: deviceHardwareMac, MaxApdu: uint32(maxADPU), Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
@@ -72,7 +72,7 @@ func readProp(cmd *cobra.Command, args []string) {
 		propInt, err = btypes.Get(propertyType)
 	}
 
-	obj := &local.Object{
+	obj := &network.Object{
 		ObjectID:   btypes.ObjectInstance(objectID),
 		ObjectType: btypes.ObjectType(objectType),
 		Prop:       propInt,

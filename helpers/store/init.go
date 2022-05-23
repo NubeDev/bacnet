@@ -5,29 +5,23 @@ import (
 	"time"
 )
 
-var store *cache.Cache
+//var store *cache.Cache
 
 type Handler struct {
 	Store *cache.Cache
 }
 
 //Init init store
-func Init(h *Handler) {
-	initStore(h.Store)
-}
-
-func initStore(d *cache.Cache) {
-	store = d
-}
-
-func getStore() *cache.Cache {
+func Init() *Handler {
+	newStore := cache.New(cache.NoExpiration, cache.DefaultExpiration)
+	store := &Handler{Store: newStore}
 	return store
 }
 
 // Get an item from the store. Returns the item or nil, and a bool indicating
 // whether the key was found.
 func (l *Handler) Get(key string) (interface{}, bool) {
-	value, found := store.Get(key)
+	value, found := l.Store.Get(key)
 	return value, found
 }
 
@@ -35,5 +29,5 @@ func (l *Handler) Get(key string) (interface{}, bool) {
 // (DefaultExpiration), the store's default expiration time is used. If it is -1
 // (NoExpiration), the item never expires.
 func (l *Handler) Set(key string, value interface{}, d time.Duration) {
-	store.Set(key, value, d)
+	l.Store.Set(key, value, d)
 }

@@ -10,19 +10,25 @@ func _() {
 	var x [1]struct{}
 	_ = x[WhoIsRouterToNetwork-0]
 	_ = x[WhatIsNetworkNumber-18]
+	_ = x[NetworkIs-19]
 }
 
 const (
 	_NetworkMessageType_name_0 = "WhoIsRouterToNetwork"
-	_NetworkMessageType_name_1 = "WhatIsNetworkNumber"
+	_NetworkMessageType_name_1 = "WhatIsNetworkNumberNetworkIs"
+)
+
+var (
+	_NetworkMessageType_index_1 = [...]uint8{0, 19, 28}
 )
 
 func (i NetworkMessageType) String() string {
 	switch {
 	case i == 0:
 		return _NetworkMessageType_name_0
-	case i == 18:
-		return _NetworkMessageType_name_1
+	case 18 <= i && i <= 19:
+		i -= 18
+		return _NetworkMessageType_name_1[_NetworkMessageType_index_1[i]:_NetworkMessageType_index_1[i+1]]
 	default:
 		return "NetworkMessageType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}

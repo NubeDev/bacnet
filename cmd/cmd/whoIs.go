@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	pprint "github.com/NubeDev/bacnet/helpers/print"
-	"github.com/NubeDev/bacnet/local"
+	"github.com/NubeDev/bacnet/network"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +25,7 @@ var whoIsCmd = &cobra.Command{
 
 func main(cmd *cobra.Command, args []string) {
 
-	client, err := local.New(&local.Local{Interface: Interface, Port: Port})
+	client, err := network.New(&network.Local{Interface: Interface, Port: Port})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return

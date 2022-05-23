@@ -1,4 +1,4 @@
-package local
+package network
 
 //ReadString to read a string like objectName
 func (device *Device) ReadString(obj *Object) (string, error) {

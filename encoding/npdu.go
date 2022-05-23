@@ -2,6 +2,7 @@ package encoding
 
 import (
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/ndpu"
 )
 
 //https://github.com/bacnet-stack/bacnet-stack/blob/master/src/bacnet/npdu.c#L391
@@ -102,7 +103,12 @@ func (d *Decoder) NPDU(n *btypes.NPDU) error {
 		if n.NetworkLayerMessageType > 0x80 {
 			d.decode(&n.VendorId)
 		}
+		if n.NetworkLayerMessageType == ndpu.NetworkIs { //used for decoding a bacnet network number on a What-Is-Network-Number 0x12
+			n.Source = &btypes.Address{}
+			d.decode(&n.Source.Net)
+		}
 	}
+
 	return d.Error()
 }
 
