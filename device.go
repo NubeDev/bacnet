@@ -3,6 +3,7 @@ package bacnet
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/ndpu"
 	"github.com/NubeDev/bacnet/datalink"
 	"github.com/NubeDev/bacnet/encoding"
 	"github.com/NubeDev/bacnet/helpers/validation"
@@ -22,8 +23,9 @@ type Client interface {
 	io.Closer
 	ClientRun()
 	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
-	WhatIsNetworkNumber()
+	WhatIsNetworkNumber() []*btypes.Address
 	IAm(dest btypes.Address, iam btypes.IAm) error
+	WhoIsRouterToNetwork() (resp *[]btypes.Address)
 	Objects(dev btypes.Device) (btypes.Device, error)
 	ReadProperty(dest btypes.Device, rp btypes.PropertyData) (btypes.PropertyData, error)
 	ReadMultiProperty(dev btypes.Device, rp btypes.MultiplePropertyData) (btypes.MultiplePropertyData, error)
@@ -52,18 +54,15 @@ type ClientBuilder struct {
 func NewClient(cb *ClientBuilder) (Client, error) {
 	var err error
 	var dataLink datalink.DataLink
-
 	iface := cb.Interface
 	ip := cb.Ip
 	port := cb.Port
 	maxPDU := cb.MaxPDU
-
 	//check ip
 	ok := validation.ValidIP(ip)
 	if !ok {
 
 	}
-
 	//check port
 	if port == 0 {
 		port = datalink.DefaultPort
@@ -72,12 +71,10 @@ func NewClient(cb *ClientBuilder) (Client, error) {
 	if !ok {
 
 	}
-
 	//check adpu
 	if maxPDU == 0 {
 		maxPDU = btypes.MaxAPDU
 	}
-
 	//build datalink
 	if iface != "" {
 		dataLink, err = datalink.NewUDPDataLink(iface, port)
@@ -145,14 +142,22 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 	if header.Function == btypes.BacFuncBroadcast || header.Function == btypes.BacFuncUnicast || header.Function == btypes.BacFuncForwardedNPDU {
 		// Remove the header information
 		b = b[mtuHeaderLength:]
-		err = dec.NPDU(&npdu)
+		networkList, err := dec.NPDU(&npdu)
 		if err != nil {
 			return
 		}
 
 		if npdu.IsNetworkLayerMessage {
 			c.log.Debug("Ignored Network Layer Message")
-			return
+			if npdu.NetworkLayerMessageType == ndpu.NetworkIs {
+				c.utsm.Publish(int(npdu.Source.Net), npdu)
+				//return
+			}
+			if npdu.NetworkLayerMessageType == ndpu.IamRouterToNetwork {
+				c.utsm.Publish(int(npdu.Source.Net), networkList)
+				//return
+			}
+
 		}
 
 		// We want to keep the APDU intact, so we will get a snapshot before decoding
@@ -179,7 +184,6 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 						iam.Addr.Adr = npdu.Source.Adr
 					}
 				}
-
 				if err != nil {
 					c.log.Error(err)
 					return
@@ -234,8 +238,14 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 	}
 }
 
+type SetBroadcastType struct { //used to override the header.Function
+	Set     bool
+	BacFunc btypes.BacFunc
+}
+
 // Send transfers the raw apdu byte slice to the destination address.
-func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int, error) {
+func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte, broadcastType *SetBroadcastType) (int, error) {
+	//broadcastType = &SetBroadcastType{}
 	var header btypes.BVLC
 	// Set packet type
 	header.Type = btypes.BVLCTypeBacnetIP
@@ -252,6 +262,13 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte) (int,
 		// SET UNICAST FLAG
 		header.Function = btypes.BacFuncUnicast
 	}
+
+	if broadcastType != nil {
+		if broadcastType.Set {
+			header.Function = broadcastType.BacFunc
+		}
+	}
+
 	//header.Function = btypes.BacFuncBroadcast //TODO this needs to be set when sending a What-is-network-number 0x12
 	header.Length = uint16(mtuHeaderLength + len(data))
 	header.Data = data

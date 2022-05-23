@@ -71,8 +71,12 @@ func (d *Decoder) Address(a *btypes.Address) {
 
 }
 
+type RouterToNetworkList struct {
+	Source []btypes.Address
+}
+
 // NPDU encodes the network layer control message
-func (d *Decoder) NPDU(n *btypes.NPDU) error {
+func (d *Decoder) NPDU(n *btypes.NPDU) (addr []btypes.Address, err error) {
 	d.decode(&n.Version)
 
 	// Prepare metadata into the second byte
@@ -107,9 +111,24 @@ func (d *Decoder) NPDU(n *btypes.NPDU) error {
 			n.Source = &btypes.Address{}
 			d.decode(&n.Source.Net)
 		}
+		if n.NetworkLayerMessageType == ndpu.IamRouterToNetwork { //used for decoding a bacnet network number on a What-Is-Network-Number 0x12
+			n.Source = &btypes.Address{}
+			var nets []btypes.Address
+			d.decode(&n.Source.Net) //decode the first network
+			nets = append(nets, *n.Source)
+			size := d.len()
+			for i := d.len(); i <= size; i++ {
+				d.decode(&n.Source.Net)
+				for _, adr := range nets {
+					if adr.Net != n.Source.Net { //make sure that a network is only added once
+						nets = append(nets, *n.Source)
+					}
+				}
+			}
+			addr = nets
+		}
 	}
-
-	return d.Error()
+	return addr, d.Error()
 }
 
 // NPDUMetadata includes additional metadata about npdu message

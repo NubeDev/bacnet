@@ -39,7 +39,7 @@ func (c *client) WriteProperty(device btypes.Device, wp btypes.PropertyData) err
 	for count := 0; err != nil && count < 2; count++ {
 		var b []byte
 		var raw interface{}
-		_, err = c.Send(device.Addr, npdu, enc.Bytes())
+		_, err = c.Send(device.Addr, npdu, enc.Bytes(), nil)
 		if err != nil {
 			continue
 		}

@@ -53,7 +53,7 @@ func (c *client) WriteMultiProperty(dev btypes.Device, wp btypes.MultiplePropert
 }
 
 func (c *client) sendWriteMultipleProperty(id int, dev btypes.Device, npdu *btypes.NPDU, request []byte) error {
-	_, err := c.Send(dev.Addr, npdu, request)
+	_, err := c.Send(dev.Addr, npdu, request, nil)
 	if err != nil {
 		return err
 	}

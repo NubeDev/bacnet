@@ -97,6 +97,8 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --n
 - [x] Write Property
 - [x] Write Property Multiple (beta)
 - [ ] Who Has
+- [x] What Is Network Number (beta)
+- [x] Who Is Router To Network (beta)
 - [ ] Change of Value Notification
 - [ ] Event Notification
 - [ ] Subscribe Change of Value
@@ -113,6 +115,8 @@ go run main.go read --interface=wlp3s0 --device=202 --address=192.168.15.202 --n
 - [ ] Write Property
 - [ ] Write Property Multiple
 - [ ] Who Has
+- [ ] What Is Network Number
+- [x] Who Is Router To Network
 - [ ] Atomic Read File
 - [ ] Atomic Write File
 

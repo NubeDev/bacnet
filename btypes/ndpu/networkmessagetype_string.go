@@ -9,23 +9,25 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[WhoIsRouterToNetwork-0]
+	_ = x[IamRouterToNetwork-1]
 	_ = x[WhatIsNetworkNumber-18]
 	_ = x[NetworkIs-19]
 }
 
 const (
-	_NetworkMessageType_name_0 = "WhoIsRouterToNetwork"
+	_NetworkMessageType_name_0 = "WhoIsRouterToNetworkIamRouterToNetwork"
 	_NetworkMessageType_name_1 = "WhatIsNetworkNumberNetworkIs"
 )
 
 var (
+	_NetworkMessageType_index_0 = [...]uint8{0, 20, 38}
 	_NetworkMessageType_index_1 = [...]uint8{0, 19, 28}
 )
 
 func (i NetworkMessageType) String() string {
 	switch {
-	case i == 0:
-		return _NetworkMessageType_name_0
+	case i <= 1:
+		return _NetworkMessageType_name_0[_NetworkMessageType_index_0[i]:_NetworkMessageType_index_0[i+1]]
 	case 18 <= i && i <= 19:
 		i -= 18
 		return _NetworkMessageType_name_1[_NetworkMessageType_index_1[i]:_NetworkMessageType_index_1[i+1]]
