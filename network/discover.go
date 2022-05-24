@@ -61,6 +61,9 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 		Prop:       btypes.PropObjectName,
 		ArrayIndex: bacnet.ArrayAll,
 	}
+	fmt.Println("GetDeviceDetails()")
+	pprint.PrintJOSN(device)
+	fmt.Println("GetDeviceDetails()")
 	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropMaxAPDU, btypes.PropVendorName, btypes.PropSegmentationSupported}
 	for i, prop := range props {
 		fmt.Println(i, "Loop Props", prop, " deviceID:", deviceID)

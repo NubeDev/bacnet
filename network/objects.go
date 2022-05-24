@@ -25,7 +25,7 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 				device.Segmentation = uint32(dev.Segmentation)
 			}
 		}
-		log.Println("bacnet.DeviceObjects() do whois on deviceID:", deviceID, " maxADPU:", device.MaxApdu, " Segmentation:", device.Segmentation)
+		log.Infoln("bacnet.DeviceObjects() do whois on deviceID:", deviceID, " maxADPU:", device.MaxApdu, " Segmentation:", device.Segmentation)
 	}
 
 	device.GetDeviceDetails(deviceID) //TODO remove this as its just here for testing
