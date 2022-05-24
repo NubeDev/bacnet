@@ -102,6 +102,7 @@ func (device *Device) DeviceDiscover() error {
 			device.MacMSTP = int(dev.Addr.Adr[0])
 		}
 		host, _ := dev.Addr.UDPAddr()
+		device.DeviceID = int(dev.ID.Instance)
 		device.Ip = host.IP.String()
 		device.Port = host.Port
 		device.NetworkNumber = int(dev.Addr.Net)
