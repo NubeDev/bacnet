@@ -111,7 +111,7 @@ func (device *Device) DeviceDiscover() error {
 		host, _ := dev.Addr.UDPAddr()
 		device.DeviceID = int(dev.ID.Instance)
 		device.Ip = host.IP.String()
-		device.Port = host.Port
+		//device.Port = host.Port
 		device.NetworkNumber = int(dev.Addr.Net)
 		device.MaxApdu = dev.MaxApdu
 		device.Segmentation = uint32(dev.Segmentation)
