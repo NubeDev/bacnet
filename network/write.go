@@ -63,7 +63,7 @@ func (device *Device) Write(write *Write) error {
 	}
 
 	rp.Object.Properties[0].Data = writeValue
-	log.Printf("Writting: %v", writeValue)
+	// log.Printf("Writting: %v", writeValue)
 	err = device.network.WriteProperty(device.dev, rp)
 	if err != nil {
 		return err

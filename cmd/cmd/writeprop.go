@@ -174,7 +174,7 @@ func writeProp(cmd *cobra.Command, args []string) {
 	}
 
 	rp.Object.Properties[0].Data = wp
-	log.Printf("Writting: %v", wp)
+	// log.Printf("Writting: %v", wp)
 	err = c.WriteProperty(dest, rp)
 	if err != nil {
 		log.Println(err)
