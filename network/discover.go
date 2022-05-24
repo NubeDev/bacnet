@@ -107,14 +107,17 @@ func (device *Device) DeviceDiscover() error {
 		device.NetworkNumber = int(dev.Addr.Net)
 		device.MaxApdu = dev.MaxApdu
 		device.Segmentation = uint32(dev.Segmentation)
+		fmt.Println("--------device------------", dev.ID.Instance)
+		pprint.PrintJOSN(device)
+		fmt.Println("--------device------------", dev.ID.Instance)
 
 		details, err := device.GetDeviceDetails(dev.ID.Instance)
 		if err != nil {
 			fmt.Println("discover err", err)
 		}
-		fmt.Println("--------device------------", dev.ID.Instance)
+		fmt.Println("--------device---details---------", dev.ID.Instance)
 		pprint.PrintJOSN(details)
-		fmt.Println("--------device------------", dev.ID.Instance)
+		fmt.Println("--------device---details---------", dev.ID.Instance)
 
 	}
 	return err
