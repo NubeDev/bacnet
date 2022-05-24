@@ -62,9 +62,13 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 		ArrayIndex: bacnet.ArrayAll,
 	}
 	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropMaxAPDU, btypes.PropVendorName, btypes.PropSegmentationSupported}
-	for _, prop := range props {
+	for i, prop := range props {
+		fmt.Println(i, "Loop Props", prop, " deviceID:", deviceID)
 		obj.Prop = prop
-		read, _ := device.Read(obj)
+		read, err := device.Read(obj)
+		if err != nil {
+			log.Errorln("bacnet-master-GetDeviceDetails()", err.Error())
+		}
 		switch prop {
 		case btypes.PropObjectName:
 			resp.Name = device.toStr(read)

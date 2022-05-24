@@ -35,7 +35,9 @@ func (store *Store) UpdateNetwork(storeID string, net *Network) error {
 		return err
 	}
 	net.bacnet = bc
-	BacStore.Set(storeID, net, -1)
+	if BacStore != nil {
+		BacStore.Set(storeID, net, -1)
+	}
 	return nil
 }
 
