@@ -61,7 +61,7 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 		Prop:       btypes.PropObjectName,
 		ArrayIndex: bacnet.ArrayAll,
 	}
-	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropMaxAPDU, btypes.PropVendorName, btypes.PropSegmentationSupported, btypes.ProtocolServicesSupported}
+	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropMaxAPDU, btypes.PropVendorName, btypes.PropSegmentationSupported}
 	for _, prop := range props {
 		obj.Prop = prop
 		read, _ := device.Read(obj)
@@ -94,7 +94,7 @@ func (device *Device) DeviceDiscover() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("--------devices------------")
+	fmt.Println("--------devices------------found device count:", len(whois))
 	pprint.PrintJOSN(whois)
 	fmt.Println("--------devices------------")
 	for _, dev := range whois {
