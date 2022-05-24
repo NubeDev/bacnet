@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+var runDiscover bool
 var scanSize uint32
 var printStdout bool
 var verbose bool

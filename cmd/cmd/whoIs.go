@@ -33,6 +33,15 @@ func main(cmd *cobra.Command, args []string) {
 	defer client.NetworkClose()
 	go client.NetworkRun()
 
+	if runDiscover {
+		device, err := network.NewDevice(client, &network.Device{Ip: deviceIP, Port: Port})
+		if err != nil {
+			return
+		}
+		device.DeviceDiscover()
+		return
+	}
+
 	wi := &bacnet.WhoIsOpts{
 		High:            endRange,
 		Low:             startRange,
@@ -51,6 +60,7 @@ func main(cmd *cobra.Command, args []string) {
 
 func init() {
 	RootCmd.AddCommand(whoIsCmd)
+	whoIsCmd.Flags().BoolVar(&runDiscover, "discover", false, "run network discover")
 	whoIsCmd.Flags().IntVarP(&startRange, "start", "s", -1, "Start range of discovery")
 	whoIsCmd.Flags().IntVarP(&endRange, "end", "e", int(0xBAC0), "End range of discovery")
 	whoIsCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "network number")

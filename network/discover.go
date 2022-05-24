@@ -1,8 +1,10 @@
 package network
 
 import (
+	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -76,7 +78,44 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 			resp.ProtocolServicesSupported = device.ToBitString(read)
 		}
 	}
-	log.Println("bacnet-device name:", resp.Name)
-	log.Println("bacnet-device vendor-name:", resp.VendorName)
+	log.Infoln("bacnet-device name:", resp.Name)
+	log.Infoln("bacnet-device vendor-name:", resp.VendorName)
 	return resp, nil
+}
+
+func (device *Device) DeviceDiscover() error {
+	options := &bacnet.WhoIsOpts{
+		Low:             0,
+		High:            0,
+		GlobalBroadcast: true,
+		NetworkNumber:   0,
+	}
+	whois, err := device.Whois(options)
+	if err != nil {
+		return err
+	}
+	fmt.Println("--------devices------------")
+	pprint.PrintJOSN(whois)
+	fmt.Println("--------devices------------")
+	for _, dev := range whois {
+		if len(dev.Addr.Adr) > 0 {
+			device.MacMSTP = int(dev.Addr.Adr[0])
+		}
+		host, _ := dev.Addr.UDPAddr()
+		device.Ip = host.IP.String()
+		device.Port = host.Port
+		device.NetworkNumber = int(dev.Addr.Net)
+		device.MaxApdu = dev.MaxApdu
+		device.Segmentation = uint32(dev.Segmentation)
+
+		details, err := device.GetDeviceDetails(dev.ID.Instance)
+		if err != nil {
+			fmt.Println("discover err", err)
+		}
+		fmt.Println("--------device------------", dev.ID.Instance)
+		pprint.PrintJOSN(details)
+		fmt.Println("--------device------------", dev.ID.Instance)
+
+	}
+	return err
 }
