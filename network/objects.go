@@ -1,7 +1,6 @@
 package network
 
 import (
-	"errors"
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
@@ -12,9 +11,10 @@ import (
 //DeviceObjects get device objects
 func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bool) (objectList []btypes.ObjectID, err error) {
 	if checkAPDU { //check set the maxADPU and Segmentation
-		whoIs, err := device.bacnet.WhoIs(&bacnet.WhoIsOpts{
-			High: int(deviceID),
-			Low:  int(deviceID),
+		whoIs, err := device.Whois(&bacnet.WhoIsOpts{
+			High:            int(deviceID),
+			Low:             int(deviceID),
+			GlobalBroadcast: true,
 		})
 		if err != nil {
 			return nil, err
@@ -25,7 +25,11 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 				device.Segmentation = uint32(dev.Segmentation)
 			}
 		}
+		log.Println("bacnet.DeviceObjects() do whois on deviceID:", deviceID, " maxADPU:", device.MaxApdu, " Segmentation:", device.Segmentation)
 	}
+
+	device.GetDeviceDetails(deviceID) //TODO remove this as its just here for testing
+
 	//get object list
 	obj := &Object{
 		ObjectID:   deviceID,
@@ -35,8 +39,6 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 
 	}
 	out, err := device.Read(obj)
-	fmt.Println("DeviceObjects", err)
-	err = errors.New("testing")
 	if err != nil { //this is a device that would have a low maxADPU
 		fmt.Println("DeviceObjects, now read here", err)
 		return device.deviceObjectsBuilder(deviceID)

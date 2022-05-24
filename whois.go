@@ -7,10 +7,10 @@ import (
 )
 
 type WhoIsOpts struct {
-	High            int
-	Low             int
-	GlobalBroadcast bool
-	NetworkNumber   uint16
+	Low             int    `json:"low"`
+	High            int    `json:"high"`
+	GlobalBroadcast bool   `json:"global_broadcast"`
+	NetworkNumber   uint16 `json:"network_number"`
 }
 
 // WhoIs finds all devices with ids between the provided low and high values.

@@ -28,6 +28,10 @@ change out the interface and device and so on
 go run main.go whois --interface=wlp3s0
 ```
 
+```
+go run main.go whois --interface=wlp3s0
+```
+
 ### read AO
 
 ```

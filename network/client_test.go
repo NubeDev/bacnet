@@ -12,13 +12,14 @@ import (
 )
 
 var iface = "wlp3s0"
-var localDevicePort = 47808
-var deviceIP = "192.168.15.202"
+var NetworkDevicePort = 47808
+var deviceIP = "192.168.15.191"
 var deviceID = 202
 var networkNumber = 0
 var macMSTP = 0
 var segmentation = segmentation2.SegmentedBoth
 var MaxApdu uint32 = btypes.MaxAPDU1476
+var storeID = "my-id"
 
 /*
 MaxApdu
@@ -38,13 +39,13 @@ no-segmentation: 3
 
 func TestWhoIs(t *testing.T) {
 
-	client, err := New(&Local{Interface: iface, Port: localDevicePort})
+	client, err := New(&Network{Interface: iface, Port: NetworkDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer client.ClientClose()
-	go client.ClientRun()
+	defer client.NetworkClose()
+	go client.NetworkRun()
 
 	wi := &bacnet.WhoIsOpts{
 		High:            0,
@@ -68,15 +69,15 @@ func TestWhoIs(t *testing.T) {
 
 func TestReadObj(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	NetworkDevice, err := New(&Network{Interface: iface, Port: NetworkDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer NetworkDevice.NetworkClose()
+	go NetworkDevice.NetworkRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: MaxApdu, Segmentation: uint32(segmentation)})
+	device, err := NewDevice(NetworkDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: MaxApdu, Segmentation: uint32(segmentation)})
 	if err != nil {
 		return
 	}
@@ -98,15 +99,15 @@ func TestReadObj(t *testing.T) {
 
 func TestWriteObj(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	NetworkDevice, err := New(&Network{Interface: iface, Port: NetworkDevicePort})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer NetworkDevice.NetworkClose()
+	go NetworkDevice.NetworkRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	device, err := NewDevice(NetworkDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {
 		return
 	}

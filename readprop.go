@@ -38,7 +38,7 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 
 	// the value filled doesn't matter. it just needs to be non nil
 	err = fmt.Errorf("go")
-	for count := 0; err != nil && count < 2; count++ {
+	for count := 0; err != nil && count < retryCount; count++ {
 		var b []byte
 		var out btypes.PropertyData
 		_, err = c.Send(device.Addr, npdu, enc.Bytes(), nil)

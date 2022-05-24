@@ -33,6 +33,15 @@ func ToInt(d btypes.PropertyData) (ok bool, out int) {
 	return ok, out
 }
 
+func ToFloat32(d btypes.PropertyData) (ok bool, out float32) {
+	if len(d.Object.Properties) == 0 {
+		fmt.Println("No value returned")
+		return ok, out
+	}
+	out, ok = d.Object.Properties[0].Data.(float32)
+	return ok, out
+}
+
 func ToFloat64(d btypes.PropertyData) (ok bool, out float64) {
 	if len(d.Object.Properties) == 0 {
 		fmt.Println("No value returned")

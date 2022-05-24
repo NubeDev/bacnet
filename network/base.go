@@ -2,25 +2,24 @@ package network
 
 import (
 	"github.com/NubeDev/bacnet"
-	"github.com/NubeDev/bacnet/helpers/store"
 )
 
-type Local struct {
+type Network struct {
 	Interface  string
 	Ip         string
 	Port       int
 	SubnetCIDR int
-	bacnet     bacnet.Client
 	StoreID    string
+	bacnet     bacnet.Client
 }
 
 // New returns a new instance of bacnet network
-func New(local *Local) (*Local, error) {
+func New(net *Network) (*Network, error) {
 	cb := &bacnet.ClientBuilder{
-		Interface:  local.Interface,
-		Ip:         local.Ip,
-		Port:       local.Port,
-		SubnetCIDR: local.SubnetCIDR,
+		Interface:  net.Interface,
+		Ip:         net.Ip,
+		Port:       net.Port,
+		SubnetCIDR: net.SubnetCIDR,
 	}
 
 	bc, err := bacnet.NewClient(cb)
@@ -28,20 +27,27 @@ func New(local *Local) (*Local, error) {
 		return nil, err
 	}
 
-	cache = store.Init()
-	local.bacnet = bc
-	cache.Set("1", local, -1)
-	return local, nil
+	net.bacnet = bc
+	if BacStore != nil {
+		BacStore.Set(net.StoreID, net, -1)
+	}
+	return net, nil
 }
 
-func (local *Local) ClientClose() {
-	local.bacnet.Close()
+func (net *Network) NetworkClose() {
+	if net.bacnet != nil {
+		net.bacnet.Close()
+	}
+
 }
 
-func (local *Local) ClientRun() {
-	local.bacnet.ClientRun()
+func (net *Network) NetworkRun() {
+	if net.bacnet != nil {
+		net.bacnet.ClientRun()
+	}
+
 }
 
-func (local *Local) store() {
+func (net *Network) store() {
 
 }

@@ -26,7 +26,7 @@ type Device struct {
 	MaxApdu       uint32     `json:"max_apdu"` //maxApduLengthAccepted	62
 	Segmentation  Enumerated `json:"segmentation"`
 	Vendor        uint32     `json:"vendor"`
-	Addr          Address    `json:"-"`
+	Addr          Address    `json:"address"`
 	Objects       ObjectMap  `json:"objects"`
 	SupportsRPM   bool       `json:"supports_rpm"` //support read prob multiple
 	SupportsWPM   bool       `json:"supports_wpm"` //support read prob multiple

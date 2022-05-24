@@ -31,6 +31,7 @@ func (device *Device) Write(write *Write) error {
 				{
 					Type:       write.Prop,
 					ArrayIndex: bacnet.ArrayAll,
+					Priority:   btypes.NPDUPriority(write.WritePriority),
 				},
 			},
 		},
@@ -63,7 +64,7 @@ func (device *Device) Write(write *Write) error {
 
 	rp.Object.Properties[0].Data = writeValue
 	log.Printf("Writting: %v", writeValue)
-	err = device.bacnet.WriteProperty(device.Dev, rp)
+	err = device.network.WriteProperty(device.dev, rp)
 	if err != nil {
 		return err
 	}

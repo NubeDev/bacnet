@@ -177,9 +177,11 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 
 				if npdu.Source != nil {
 					if npdu.Source.Net > 0 { // add in device network number
+						log.Println("device-network-address", npdu.Source.Net)
 						iam.Addr.Net = npdu.Source.Net
 					}
 					if len(npdu.Source.Adr) > 0 { // add in hardware mac
+						log.Println("device-mstp-mac-address", npdu.Source.Adr)
 						iam.Addr.Adr = npdu.Source.Adr
 					}
 				}
@@ -268,7 +270,6 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte, broad
 		}
 	}
 
-	//header.Function = btypes.BacFuncBroadcast //TODO this needs to be set when sending a What-is-network-number 0x12
 	header.Length = uint16(mtuHeaderLength + len(data))
 	header.Data = data
 	e := encoding.NewEncoder()

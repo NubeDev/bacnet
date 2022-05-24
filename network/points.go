@@ -3,6 +3,7 @@ package network
 import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/priority"
 	"github.com/NubeDev/bacnet/btypes/units"
 	"github.com/NubeDev/bacnet/helpers/data"
 )
@@ -63,8 +64,8 @@ func (device *Device) PointDetails(pnt *Point) (resp *PointDetails, err error) {
 ***** READS *****
  */
 
-//PointReadFloat64 use this when wanting to read point values for an AI, AV, AO
-func (device *Device) PointReadFloat64(pnt *Point) (float64, error) {
+//PointReadFloat32 use this when wanting to read point values for an AI, AV, AO
+func (device *Device) PointReadFloat32(pnt *Point) (float32, error) {
 	if device.isPointFloat(pnt) {
 
 	}
@@ -82,8 +83,28 @@ func (device *Device) PointReadFloat64(pnt *Point) (float64, error) {
 	return device.toFloat(read), nil
 }
 
+//PointReadPriority use this when wanting to read point values for an AI, AV, AO
+func (device *Device) PointReadPriority(pnt *Point) (pri *priority.Float32, err error) {
+	if device.isPointWriteable(pnt) {
+
+	}
+	pri = &priority.Float32{}
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ObjectType: pnt.ObjectType,
+		Prop:       btypes.PropPriorityArray,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+
+	read, err := device.Read(obj)
+	if err != nil {
+		return pri, err
+	}
+	return priority.BuildFloat32(read, pnt.ObjectType), nil
+}
+
 //PointReadBool use this when wanting to read point values for an BI, BV, BO
-func (device *Device) PointReadBool(pnt *Point) (bool, error) {
+func (device *Device) PointReadBool(pnt *Point) (uint32, error) {
 	if !device.isPointBool(pnt) {
 
 	}
@@ -96,9 +117,9 @@ func (device *Device) PointReadBool(pnt *Point) (bool, error) {
 
 	read, err := device.Read(obj)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
-	return device.toBool(read), nil
+	return device.toUint32(read), nil
 }
 
 func (device *Device) PointReleaseOverride(pnt *Point) (bool, error) {
@@ -124,15 +145,16 @@ func (device *Device) PointReleaseOverride(pnt *Point) (bool, error) {
  */
 
 //PointWriteAnalogue use this when wanting to write a new value for an AV, AO
-func (device *Device) PointWriteAnalogue(pnt *Point, writeValue float32) error {
+func (device *Device) PointWriteAnalogue(pnt *Point, value float32) error {
 	if device.isPointFloat(pnt) {
 
 	}
 	write := &Write{
-		ObjectID:   pnt.ObjectID,
-		ObjectType: pnt.ObjectType,
-		Prop:       btypes.PropPresentValue,
-		WriteValue: writeValue,
+		ObjectID:      pnt.ObjectID,
+		ObjectType:    pnt.ObjectType,
+		Prop:          btypes.PropPresentValue,
+		WriteValue:    value,
+		WritePriority: pnt.WritePriority,
 	}
 	err := device.Write(write)
 	if err != nil {
@@ -142,15 +164,16 @@ func (device *Device) PointWriteAnalogue(pnt *Point, writeValue float32) error {
 }
 
 //PointWriteBool use this when wanting to write a new value for an BV, AO
-func (device *Device) PointWriteBool(pnt *Point, writeValue uint32) error {
+func (device *Device) PointWriteBool(pnt *Point, value uint32) error {
 	if device.isPointFloat(pnt) {
 
 	}
 	write := &Write{
-		ObjectID:   pnt.ObjectID,
-		ObjectType: pnt.ObjectType,
-		Prop:       btypes.PropPresentValue,
-		WriteValue: writeValue,
+		ObjectID:      pnt.ObjectID,
+		ObjectType:    pnt.ObjectType,
+		Prop:          btypes.PropPresentValue,
+		WriteValue:    value,
+		WritePriority: pnt.WritePriority,
 	}
 	err := device.Write(write)
 	if err != nil {
@@ -163,8 +186,8 @@ func (device *Device) PointWriteBool(pnt *Point, writeValue uint32) error {
 ***** HELPERS *****
  */
 
-func (device *Device) toFloat(d btypes.PropertyData) float64 {
-	_, out := data.ToFloat64(d)
+func (device *Device) toFloat(d btypes.PropertyData) float32 {
+	_, out := data.ToFloat32(d)
 	return out
 }
 

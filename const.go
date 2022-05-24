@@ -1,5 +1,8 @@
 package bacnet
 
+//fail read or write retry count
+const retryCount = 1
+
 // MTSP
 const defaultMTSPBAUD = 38400
 const defaultMTSPMAC = 127

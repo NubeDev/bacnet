@@ -1,29 +1,109 @@
 package network
 
 import (
+	"fmt"
 	"github.com/NubeDev/bacnet"
+	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/helpers/store"
+	"github.com/pkg/errors"
 )
 
-var cache *store.Handler
+//var memDb *store.Handler
 
-//UpdateClient updated a cached
-func (local *Local) UpdateClient(storeID string) error {
+type Store struct{}
+
+var BacStore *store.Handler
+
+func NewStore() *Store {
+	BacStore = store.Init()
+	s := &Store{}
+	return s
+}
+
+//UpdateNetwork updated a cached
+func (store *Store) UpdateNetwork(storeID string, net *Network) error {
 	//first close the client
-	local.ClientClose()
-
+	net.NetworkClose()
 	cb := &bacnet.ClientBuilder{
-		Interface:  local.Interface,
-		Ip:         local.Ip,
-		Port:       local.Port,
-		SubnetCIDR: local.SubnetCIDR,
+		Interface:  net.Interface,
+		Ip:         net.Ip,
+		Port:       net.Port,
+		SubnetCIDR: net.SubnetCIDR,
 	}
-
 	bc, err := bacnet.NewClient(cb)
 	if err != nil {
 		return err
 	}
-	local.bacnet = bc
-	cache.Set(storeID, local, -1)
+	net.bacnet = bc
+	BacStore.Set(storeID, net, -1)
 	return nil
+}
+
+func (store *Store) GetNetwork(uuid string) (*Network, error) {
+	cli, ok := BacStore.Get(uuid)
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("bacnet: no network found with uuid:%s", uuid))
+	}
+	parse := cli.(*Network)
+	return parse, nil
+}
+
+//UpdateDevice updated a cached device
+func (store *Store) UpdateDevice(storeID string, net *Network, device *Device) error {
+	var err error
+	dev := &btypes.Device{
+		Ip:            device.Ip,
+		DeviceID:      device.DeviceID,
+		NetworkNumber: device.NetworkNumber,
+		MacMSTP:       device.MacMSTP,
+		MaxApdu:       device.MaxApdu,
+		Segmentation:  btypes.Enumerated(device.Segmentation),
+	}
+	dev, err = btypes.NewDevice(dev)
+	if err != nil {
+		return err
+	}
+	if dev == nil {
+		fmt.Println("dev is nil")
+		return err
+	}
+	device.network = net.bacnet
+	device.dev = *dev
+	if BacStore != nil {
+		BacStore.Set(storeID, device, -1)
+	}
+	//var err error
+	//dev := &btypes.Device{
+	//	Ip:            device.Ip,
+	//	DeviceID:      device.DeviceID,
+	//	NetworkNumber: device.NetworkNumber,
+	//	MacMSTP:       device.MacMSTP,
+	//	MaxApdu:       device.MaxApdu,
+	//	Segmentation:  btypes.Enumerated(device.Segmentation),
+	//}
+	//fmt.Println("UPDATE store", storeID)
+	//pprint.Print(device)
+	//dev, err = btypes.NewDevice(dev)
+	//if err != nil {
+	//	return err
+	//}
+	//if dev == nil {
+	//	fmt.Println("dev is nil")
+	//	return err
+	//}
+	//device.network = device.network
+	//device.dev = *dev
+	//if BacStore != nil {
+	//	BacStore.Set(storeID, device, -1)
+	//}
+	return nil
+}
+
+func (store *Store) GetDevice(uuid string) (*Device, error) {
+	cli, ok := BacStore.Get(uuid)
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("bacnet: no device found with uuid:%s", uuid))
+	}
+	parse := cli.(*Device)
+	return parse, nil
 }

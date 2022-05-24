@@ -14,12 +14,14 @@ type Device struct {
 	MacMSTP       int
 	MaxApdu       uint32
 	Segmentation  uint32
-	Dev           btypes.Device
-	bacnet        bacnet.Client
+	StoreID       string
+	dev           btypes.Device
+	network       bacnet.Client
 }
 
 // NewDevice returns a new instance of ta bacnet device
-func NewDevice(bacnetDevice *Local, device *Device) (*Device, error) {
+func NewDevice(net *Network, device *Device) (*Device, error) {
+	var err error
 	dev := &btypes.Device{
 		Ip:            device.Ip,
 		DeviceID:      device.DeviceID,
@@ -28,8 +30,7 @@ func NewDevice(bacnetDevice *Local, device *Device) (*Device, error) {
 		MaxApdu:       device.MaxApdu,
 		Segmentation:  btypes.Enumerated(device.Segmentation),
 	}
-
-	dev, err := btypes.NewDevice(dev)
+	dev, err = btypes.NewDevice(dev)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +38,10 @@ func NewDevice(bacnetDevice *Local, device *Device) (*Device, error) {
 		fmt.Println("dev is nil")
 		return nil, err
 	}
-	device.bacnet = bacnetDevice.bacnet
-	device.Dev = *dev
+	device.network = net.bacnet
+	device.dev = *dev
+	if BacStore != nil {
+		BacStore.Set(device.StoreID, device, -1)
+	}
 	return device, nil
 }

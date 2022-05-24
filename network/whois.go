@@ -5,7 +5,14 @@ import (
 	"github.com/NubeDev/bacnet/btypes"
 )
 
-func (local *Local) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
-	resp, err := local.bacnet.WhoIs(options)
+func (device *Device) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
+	go device.network.ClientRun()
+	resp, err := device.network.WhoIs(options)
+	return resp, err
+}
+
+func (net *Network) Whois(options *bacnet.WhoIsOpts) ([]btypes.Device, error) {
+	go net.NetworkRun()
+	resp, err := net.bacnet.WhoIs(options)
 	return resp, err
 }

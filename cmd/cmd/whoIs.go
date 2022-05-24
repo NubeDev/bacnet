@@ -25,13 +25,13 @@ var whoIsCmd = &cobra.Command{
 
 func main(cmd *cobra.Command, args []string) {
 
-	client, err := network.New(&network.Local{Interface: Interface, Port: Port})
+	client, err := network.New(&network.Network{Interface: Interface, Port: Port})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer client.ClientClose()
-	go client.ClientRun()
+	defer client.NetworkClose()
+	go client.NetworkRun()
 
 	wi := &bacnet.WhoIsOpts{
 		High:            endRange,

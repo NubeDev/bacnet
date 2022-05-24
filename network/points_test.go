@@ -8,13 +8,13 @@ import (
 
 func TestPointDetails(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {
@@ -37,13 +37,13 @@ func TestPointDetails(t *testing.T) {
 
 func TestRead(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {
@@ -55,7 +55,7 @@ func TestRead(t *testing.T) {
 		ObjectType: btypes.AnalogOutput,
 	}
 
-	readFloat64, err := device.PointReadFloat64(pnt)
+	readFloat64, err := device.PointReadFloat32(pnt)
 	if err != nil {
 		return
 	}

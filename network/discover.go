@@ -3,6 +3,7 @@ package network
 import (
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	log "github.com/sirupsen/logrus"
 )
 
 type DevicePoints struct {
@@ -75,5 +76,7 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 			resp.ProtocolServicesSupported = device.ToBitString(read)
 		}
 	}
+	log.Println("bacnet-device name:", resp.Name)
+	log.Println("bacnet-device vendor-name:", resp.VendorName)
 	return resp, nil
 }

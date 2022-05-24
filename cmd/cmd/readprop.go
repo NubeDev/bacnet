@@ -7,6 +7,7 @@ import (
 	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"github.com/NubeDev/bacnet/network"
 	"github.com/spf13/cobra"
+	"reflect"
 	"strconv"
 )
 
@@ -42,13 +43,13 @@ var readCmd = &cobra.Command{
 
 func readProp(cmd *cobra.Command, args []string) {
 
-	localDevice, err := network.New(&network.Local{Interface: Interface, Port: Port})
+	localDevice, err := network.New(&network.Network{Interface: Interface, Port: Port})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
 
 	device, err := network.NewDevice(localDevice, &network.Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: deviceHardwareMac, MaxApdu: uint32(maxADPU), Segmentation: uint32(segmentation)})
 	if err != nil {
@@ -81,7 +82,8 @@ func readProp(cmd *cobra.Command, args []string) {
 	}
 	read, err := device.Read(obj)
 	fmt.Println(err)
-	fmt.Println(read)
+	pprint.PrintJOSN(read)
+	fmt.Println("TYPE", reflect.TypeOf(read.Object.Properties[0].Data))
 }
 func init() {
 	// Descriptions are kept separate for legibility purposes.
@@ -101,7 +103,7 @@ func init() {
 	readCmd.Flags().IntVarP(&deviceHardwareMac, "mstp", "", 0, "device hardware mstp addr")
 	readCmd.Flags().IntVarP(&maxADPU, "adpu", "", 0, "device max adpu")
 	readCmd.Flags().IntVarP(&segmentation, "seg", "", 0, "device segmentation")
-	readCmd.Flags().IntVarP(&objectID, "objectID", "", 202, "object ID")
+	readCmd.Flags().IntVarP(&objectID, "objectID", "", -1, "object ID")
 	readCmd.Flags().IntVarP(&objectType, "objectType", "", 8, "object type")
 	readCmd.Flags().StringVarP(&propertyType, "property", "", btypes.ObjectNameStr, propertyTypeDescr)
 	readCmd.Flags().Uint32Var(&arrayIndex, "index", bacnet.ArrayAll, "Which position to return.")

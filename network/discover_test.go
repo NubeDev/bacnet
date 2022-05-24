@@ -11,13 +11,13 @@ import (
 
 func TestDiscover(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {
@@ -34,13 +34,13 @@ func TestDiscover(t *testing.T) {
 
 func TestGetPointsList(t *testing.T) {
 
-	localDevice, err := New(&Local{Interface: iface, Port: localDevicePort})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.ClientClose()
-	go localDevice.ClientRun()
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {

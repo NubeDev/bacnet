@@ -32,7 +32,7 @@ func (device *Device) Read(obj *Object) (out btypes.PropertyData, err error) {
 			},
 		},
 	}
-	out, err = device.bacnet.ReadProperty(device.Dev, rp)
+	out, err = device.network.ReadProperty(device.dev, rp)
 	if err != nil {
 		if rp.Object.Properties[0].Type == btypes.PropObjectList {
 			log.Errorln("network.Read(): PropObjectList reads may need to be broken up into multiple reads due to length. Read index 0 for array length err:", err)
