@@ -86,7 +86,18 @@ func readProp(cmd *cobra.Command, args []string) {
 	}
 	read, err := device.Read(obj)
 	pprint.PrintJOSN(read)
+	fmt.Println(read.Object.Properties[0].Data)
+
+	arr := read.Object.Properties[0].Data.(*btypes.BitString)
+	for i, aa := range arr.GetValue() {
+		fmt.Println(i, aa)
+	}
 	fmt.Println("TYPE", reflect.TypeOf(read.Object.Properties[0].Data))
+	//fmt.Println(1111, arr)
+	//for i, a := range arr {
+	//	fmt.Println(i, a)
+	//}
+
 }
 func init() {
 	// Descriptions are kept separate for legibility purposes.
