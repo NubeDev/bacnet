@@ -95,7 +95,7 @@ func (t *TSM) Receive(id int, timeout time.Duration) (interface{}, error) {
 	case b := <-s.data:
 		return b, nil
 	case <-ctx.Done():
-		return nil, fmt.Errorf("Receive timed out (%v)", timeout)
+		return nil, fmt.Errorf("receive timed out (%v)", timeout)
 	}
 
 }

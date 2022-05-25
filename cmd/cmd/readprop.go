@@ -61,7 +61,11 @@ func readProp(cmd *cobra.Command, args []string) {
 		if err != nil {
 			return
 		}
-		pprint.PrintJOSN(points)
+		for _, p := range points {
+			fmt.Println("pnt----------pnt----------", p.Name)
+			pprint.PrintJOSN(p)
+			//fmt.Println(p.ObjectType)
+		}
 		return
 	}
 
@@ -81,7 +85,6 @@ func readProp(cmd *cobra.Command, args []string) {
 
 	}
 	read, err := device.Read(obj)
-	fmt.Println(err)
 	pprint.PrintJOSN(read)
 	fmt.Println("TYPE", reflect.TypeOf(read.Object.Properties[0].Data))
 }
@@ -96,7 +99,7 @@ func init() {
 	RootCmd.AddCommand(readCmd)
 
 	// Pass flags to children
-	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "", 202, "device id")
+	readCmd.PersistentFlags().IntVarP(&deviceID, "device", "", 0, "device id")
 	readCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
 	readCmd.Flags().IntVarP(&devicePort, "dport", "", 47808, "device port")
 	readCmd.Flags().IntVarP(&networkNumber, "network", "", 0, "bacnet network number")

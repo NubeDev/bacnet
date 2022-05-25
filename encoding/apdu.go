@@ -2,6 +2,7 @@ package encoding
 
 import (
 	"fmt"
+	"github.com/NubeDev/bacnet/btypes/bacerr"
 
 	"github.com/NubeDev/bacnet/btypes"
 )
@@ -84,6 +85,29 @@ func (d *Decoder) APDU(a *btypes.APDU) error {
 	}
 }
 
+//func (d *Decoder) apduError(a *btypes.APDU) error {
+//	d.decode(&a.InvokeId)
+//	d.decode(&a.Service)
+//
+//	_, meta := d.tagNumber()
+//	if meta.isOpening() {
+//		_, _, value := d.tagNumberAndValue()
+//		a.Error.Class = d.unsigned(int(value))
+//		_, _, value = d.tagNumberAndValue()
+//		a.Error.Code = d.unsigned(int(value))
+//		_, meta = d.tagNumber()
+//		if !meta.isClosing() {
+//			return &ErrorWrongTagType{ClosingTag}
+//		}
+//	} else {
+//		_, _, value := d.tagNumberAndValue()
+//		a.Error.Class = d.unsigned(int(value))
+//		_, _, value = d.tagNumberAndValue()
+//		a.Error.Code = d.unsigned(int(value))
+//	}
+//	return nil
+//}
+
 func (d *Decoder) apduError(a *btypes.APDU) error {
 	d.decode(&a.InvokeId)
 	d.decode(&a.Service)
@@ -91,18 +115,24 @@ func (d *Decoder) apduError(a *btypes.APDU) error {
 	_, meta := d.tagNumber()
 	if meta.isOpening() {
 		_, _, value := d.tagNumberAndValue()
-		a.Error.Class = d.unsigned(int(value))
+		a.Error.Class = bacerr.ErrorClass(d.unsigned(int(value)))
 		_, _, value = d.tagNumberAndValue()
-		a.Error.Code = d.unsigned(int(value))
+		a.Error.Code = bacerr.ErrorCode(d.unsigned(int(value)))
 		_, meta = d.tagNumber()
 		if !meta.isClosing() {
 			return &ErrorWrongTagType{ClosingTag}
 		}
 	} else {
-		_, _, value := d.tagNumberAndValue()
-		a.Error.Class = d.unsigned(int(value))
-		_, _, value = d.tagNumberAndValue()
-		a.Error.Code = d.unsigned(int(value))
+		_, m, _ := d.tagNumberAndValue()
+		a.Error.Class = bacerr.ErrorClass(m)
+		_, m, _ = d.tagNumberAndValue()
+		a.Error.Code = bacerr.ErrorCode(m)
+		//TODO was like this but didnt work need to test more (changed to but as above)
+		//t, m, value := d.tagNumberAndValue()
+		//a.Error.Class = d.unsigned(int(value))
+		//t, m, value := d.tagNumberAndValue()
+		//a.Error.Code = d.unsigned(int(value))
+
 	}
 	return nil
 }

@@ -129,17 +129,17 @@ func (d *Decoder) unsigned24() uint32 {
 
 func (d *Decoder) unsigned(length int) uint32 {
 	switch length {
-	case size8:
+	case size8: //1
 		var val uint8
 		d.decode(&val)
 		return uint32(val)
-	case size16:
+	case size16: //2
 		var val uint16
 		d.decode(&val)
 		return uint32(val)
-	case size24:
+	case size24: //3
 		return d.unsigned24()
-	case size32:
+	case size32: //4
 		var val uint32
 		d.decode(&val)
 		return val

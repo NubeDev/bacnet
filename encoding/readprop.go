@@ -126,7 +126,7 @@ func (d *Decoder) ReadProperty(data *btypes.PropertyData) error {
 		lenValue = d.value(meta)
 
 		var openTag uint8
-		// I tried to not use magic numbers but it doesn't look like it can be avoid
+		// I tried to not use magic numbers but it doesn't look like it can be avoided
 		// If the attag we receive is a tag of 2 then set the value
 		if tag == 2 {
 			prop.ArrayIndex = d.unsigned(int(lenValue))

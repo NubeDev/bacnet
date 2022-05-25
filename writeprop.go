@@ -28,12 +28,10 @@ func (c *client) WriteProperty(device btypes.Device, wp btypes.PropertyData) err
 	}
 	enc := encoding.NewEncoder()
 	enc.NPDU(npdu)
-
 	enc.WriteProperty(uint8(id), wp)
 	if enc.Error() != nil {
 		return enc.Error()
 	}
-
 	// the value filled doesn't matter. it just needs to be non nil
 	err = fmt.Errorf("go")
 	for count := 0; err != nil && count < 2; count++ {
@@ -43,13 +41,15 @@ func (c *client) WriteProperty(device btypes.Device, wp btypes.PropertyData) err
 		if err != nil {
 			continue
 		}
-
 		raw, err = c.tsm.Receive(id, time.Duration(5)*time.Second)
 		if err != nil {
 			continue
 		}
 		switch v := raw.(type) {
 		case error:
+			if err == nil {
+				err = raw.(error)
+			}
 			return err
 		case []byte:
 			b = v
@@ -58,7 +58,6 @@ func (c *client) WriteProperty(device btypes.Device, wp btypes.PropertyData) err
 		}
 
 		dec := encoding.NewDecoder(b)
-
 		var apdu btypes.APDU
 		if err = dec.APDU(&apdu); err != nil {
 			continue

@@ -219,7 +219,7 @@ func (c *client) handleMsg(src *btypes.Address, b []byte) {
 				return
 			}
 		case btypes.Error:
-			err := fmt.Errorf("error class %d code %d", apdu.Error.Class, apdu.Error.Code)
+			err := fmt.Errorf("error class %s code %s", apdu.Error.Class.String(), apdu.Error.Code.String())
 			err = c.tsm.Send(int(apdu.InvokeId), err)
 			if err != nil {
 				c.log.Debugf("unable to Send error to %d: %v", apdu.InvokeId, err)

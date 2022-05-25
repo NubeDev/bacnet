@@ -75,7 +75,6 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 		if err = dec.ReadProperty(&out); err != nil {
 			continue
 		}
-
 		return out, dec.Error()
 	}
 	return btypes.PropertyData{}, err

@@ -24,11 +24,3 @@ const (
 // ArrayAll is an argument typically passed during a read to signify where to
 // read
 const ArrayAll uint32 = ^uint32(0)
-
-type stringType uint8
-
-// Supported String btypes
-const (
-	stringUTF8    stringType = 0
-	characterUCS2 stringType = 4 //johnson controllers use this
-)

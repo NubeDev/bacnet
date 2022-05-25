@@ -1,6 +1,9 @@
 package btypes
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/NubeDev/bacnet/btypes/bacerr"
+)
 
 /*
 Max ADPU sizes
@@ -102,8 +105,8 @@ type APDU struct {
 	Service                   ServiceConfirmed
 	UnconfirmedService        ServiceUnconfirmed
 	Error                     struct {
-		Class uint32
-		Code  uint32
+		Class bacerr.ErrorClass
+		Code  bacerr.ErrorCode
 	}
 
 	// This is the raw data passed based on the service
