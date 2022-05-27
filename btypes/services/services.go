@@ -10,9 +10,10 @@ This property indicates which standardized protocol services are supported by th
 
 //Supported eg: Name acknowledgeAlarm Number 0 Index 1
 type Supported struct {
-	Name   string //name of service
-	Number uint16 //prop number
-	Index  int    //position in the bitString
+	Name      string //name of service
+	Number    uint16 //prop number
+	Index     int    //position in the bitString
+	Supported bool   //feature supported boolean
 }
 
 var acknowledgeAlarm = Supported{
@@ -243,12 +244,44 @@ var writeGroup = Supported{
 }
 
 var supportedList = map[Supported]string{
-	acknowledgeAlarm:         acknowledgeAlarm.Name,
-	confirmedCOVNotification: confirmedCOVNotification.Name,
-	readProperty:             readProperty.Name,
-	readPropertyMultiple:     readPropertyMultiple.Name,
-	writeProperty:            writeProperty.Name,
-	writePropertyMultiple:    writePropertyMultiple.Name,
+	acknowledgeAlarm:             acknowledgeAlarm.Name,
+	confirmedCOVNotification:     confirmedCOVNotification.Name,
+	confirmedEventNotification:   confirmedEventNotification.Name,
+	getAlarmSummary:              getAlarmSummary.Name,
+	getEnrollmentSummary:         getEnrollmentSummary.Name,
+	subscribeCOV:                 subscribeCOV.Name,
+	atomicReadFile:               atomicReadFile.Name,
+	atomicWriteFile:              atomicWriteFile.Name,
+	addListElement:               addListElement.Name,
+	removeListElement:            removeListElement.Name,
+	createObject:                 createObject.Name,
+	deleteObject:                 deleteObject.Name,
+	readProperty:                 readProperty.Name,
+	readPropertyMultiple:         readPropertyMultiple.Name,
+	writeProperty:                writeProperty.Name,
+	writePropertyMultiple:        writePropertyMultiple.Name,
+	deviceCommunicationControl:   deviceCommunicationControl.Name,
+	confirmedPrivateTransfer:     confirmedPrivateTransfer.Name,
+	confirmedTextMessage:         confirmedTextMessage.Name,
+	reinitializeDevice:           reinitializeDevice.Name,
+	vtOpen:                       vtOpen.Name,
+	vtClose:                      vtClose.Name,
+	vtData:                       vtData.Name,
+	iAm:                          iAm.Name,
+	iHave:                        iHave.Name,
+	unconfirmedCOVNotification:   unconfirmedCOVNotification.Name,
+	unconfirmedEventNotification: unconfirmedEventNotification.Name,
+	unconfirmedPrivateTransfer:   unconfirmedPrivateTransfer.Name,
+	unconfirmedTextMessage:       unconfirmedTextMessage.Name,
+	timeSynchronization:          timeSynchronization.Name,
+	whoHas:                       whoHas.Name,
+	whoIs:                        whoIs.Name,
+	readRange:                    readRange.Name,
+	utcTimeSynchronization:       utcTimeSynchronization.Name,
+	lifeSafetyOperation:          lifeSafetyOperation.Name,
+	subscribeCOVProperty:         subscribeCOVProperty.Name,
+	getEventInformation:          getEventInformation.Name,
+	writeGroup:                   writeGroup.Name,
 }
 
 func (support Supported) ListAll() map[Supported]string {

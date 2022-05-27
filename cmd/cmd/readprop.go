@@ -2,13 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"reflect"
+	"strconv"
+
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
+	"github.com/NubeDev/bacnet/btypes/services"
 	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"github.com/NubeDev/bacnet/network"
 	"github.com/spf13/cobra"
-	"reflect"
-	"strconv"
 )
 
 // Flags
@@ -91,13 +93,15 @@ func readProp(cmd *cobra.Command, args []string) {
 	arr := read.Object.Properties[0].Data.(*btypes.BitString)
 	for i, aa := range arr.GetValue() {
 		fmt.Println(i, aa)
+		fmt.Println("TYPE", reflect.TypeOf(aa))
 	}
 	fmt.Println("TYPE", reflect.TypeOf(read.Object.Properties[0].Data))
 	//fmt.Println(1111, arr)
 	//for i, a := range arr {
 	//	fmt.Println(i, a)
 	//}
-
+	ss := services.Supported{}
+	ss.ListAll()
 }
 func init() {
 	// Descriptions are kept separate for legibility purposes.
