@@ -146,3 +146,38 @@ This library is heavily based on the BACnet-Stack library originally written by 
 
 - Ported and all credit to alex from https://github.com/alexbeltran/gobacnet
 - And ideas from https://github.com/noahtkeller/go-bacnet
+
+
+
+example whois
+```
+	bytes := []byte{
+		0x81, 0x0b, 0x00, 0x08, // BVLC
+		0x01, 0x00, // NPDU
+		0x10, 0x08, // APDU
+	}
+
+	pc, err := net.ListenPacket("udp4", ":47809")
+	if err != nil {
+		panic(err)
+	}
+	defer pc.Close()
+
+	addr, err := net.ResolveUDPAddr("udp4", "255.255.255.255:47808")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = pc.WriteTo(bytes, addr)
+	if err != nil {
+		panic(err)
+	}
+	d := make([]byte, 1)
+
+	a, b, c := pc.ReadFrom(d)
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+  ```
+
+
