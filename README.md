@@ -150,7 +150,7 @@ This library is heavily based on the BACnet-Stack library originally written by 
 
 
 example whois
-```
+```go
 	bytes := []byte{
 		0x81, 0x0b, 0x00, 0x08, // BVLC
 		0x01, 0x00, // NPDU
