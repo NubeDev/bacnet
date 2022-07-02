@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/NubeDev/bacnet"
+	log "github.com/sirupsen/logrus"
 )
 
 type Network struct {
@@ -36,7 +37,12 @@ func New(net *Network) (*Network, error) {
 
 func (net *Network) NetworkClose() {
 	if net.bacnet != nil {
-		net.bacnet.Close()
+		log.Infof("close bacnet network")
+		err := net.bacnet.Close()
+		if err != nil {
+			log.Errorf("close bacnet network err:%s", err.Error())
+			return
+		}
 	}
 
 }

@@ -54,6 +54,14 @@ func main(cmd *cobra.Command, args []string) {
 	}
 
 	pprint.PrintJOSN(whoIs)
+
+	whoIs, err = client.Whois(wi)
+	if err != nil {
+		fmt.Println("ERR-whoIs", err)
+		return
+	}
+	fmt.Println("whois 2nd")
+	pprint.PrintJOSN(whoIs)
 }
 
 func init() {
