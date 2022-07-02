@@ -84,7 +84,7 @@ func TestReadWrite(t *testing.T) {
 		ObjectType: btypes.AnalogValue,
 	}
 
-	err = device.PointWriteAnalogue(pnt, 1111)
+	err = device.PointWriteAnalogue(pnt, 55)
 	if err != nil {
 		//return
 	}

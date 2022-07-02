@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-var iface = "enp0s31f6"
+var iface = "wlp3s0"
 var NetworkDevicePort = 47808
 var deviceIP = "192.168.15.117"
 var deviceID = 202

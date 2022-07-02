@@ -86,12 +86,19 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 		// Check to see if we are in the map before inserting
 		if _, ok := uniqueMap[r.ID.Instance]; !ok {
 			dev := btypes.Device{
+				DeviceID:     int(r.ID.Instance),
 				Addr:         r.Addr,
 				ID:           r.ID,
 				MaxApdu:      r.MaxApdu,
 				Segmentation: r.Segmentation,
 				Vendor:       r.Vendor,
 			}
+			ip, err := r.Addr.UDPAddr()
+			if err == nil {
+				dev.Ip = ip.IP.String()
+				dev.Port = ip.Port
+			}
+
 			uniqueMap[r.ID.Instance] = btypes.Device(dev)
 			uniqueList = append(uniqueList, dev)
 		}
