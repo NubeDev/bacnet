@@ -17,7 +17,7 @@ type IAm struct {
 }
 
 type Device struct {
-	ID            ObjectID   `json:"object_id"`
+	ID            ObjectID   `json:"-"`
 	DeviceID      int        `json:"device_id"`
 	Ip            string     `json:"ip"`
 	Port          int        `json:"port"`
@@ -27,7 +27,7 @@ type Device struct {
 	Segmentation  Enumerated `json:"segmentation"`
 	Vendor        uint32     `json:"vendor"`
 	Addr          Address    `json:"address"`
-	Objects       ObjectMap  `json:"objects"`
+	Objects       ObjectMap  `json:"-"`
 	SupportsRPM   bool       `json:"supports_rpm"` //support read prob multiple
 	SupportsWPM   bool       `json:"supports_wpm"` //support read prob multiple
 }
