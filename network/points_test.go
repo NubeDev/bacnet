@@ -8,7 +8,7 @@ import (
 
 func TestPointDetails(t *testing.T) {
 
-	localDevice, err := New(&Network{Interface: iface, Port: 47809})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return

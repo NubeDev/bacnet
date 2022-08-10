@@ -40,7 +40,6 @@ func init() {
 	support by property flag`
 
 	RootCmd.AddCommand(writeCmd)
-
 	// Pass flags to children
 	writeCmd.PersistentFlags().IntVarP(&deviceID, "device", "d", 1234, "device id")
 	writeCmd.Flags().StringVarP(&deviceIP, "address", "", "192.168.15.202", "device ip")
