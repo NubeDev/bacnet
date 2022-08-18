@@ -22,6 +22,10 @@ type Device struct {
 // NewDevice returns a new instance of ta bacnet device
 func NewDevice(net *Network, device *Device) (*Device, error) {
 	var err error
+	if net == nil {
+		fmt.Println("network can not be nil")
+		return nil, err
+	}
 	dev := &btypes.Device{
 		Ip:            device.Ip,
 		DeviceID:      device.DeviceID,

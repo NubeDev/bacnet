@@ -97,3 +97,33 @@ func TestReadWrite(t *testing.T) {
 	fmt.Println(readFloat64, err)
 
 }
+
+func TestReadPri(t *testing.T) {
+
+	localDevice, err := New(&Network{Interface: iface, Port: 47809})
+	if err != nil {
+		fmt.Println("ERR-client", err)
+		return
+	}
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
+
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	if err != nil {
+		return
+	}
+
+	pnt := &Point{
+		ObjectID:   1,
+		ObjectType: btypes.BinaryValue,
+	}
+
+	fmt.Println(err)
+	readFloat64, err := device.PointReadPriority(pnt)
+	if err != nil {
+		return
+	}
+
+	fmt.Println(readFloat64, err)
+
+}

@@ -132,7 +132,6 @@ func IPPortToAddress(ip net.IP, port int) *btypes.Address {
 func UDPToAddress(n *net.UDPAddr) *btypes.Address {
 	a := &btypes.Address{}
 	p := uint16(n.Port)
-
 	// Length of IP plus the port
 	length := net.IPv4len + 2
 	a.Mac = make([]uint8, length)
@@ -140,7 +139,6 @@ func UDPToAddress(n *net.UDPAddr) *btypes.Address {
 	for i := 0; i < net.IPv4len; i++ {
 		a.Mac[i] = n.IP[i]
 	}
-
 	// Encode port
 	a.Mac[net.IPv4len+0] = uint8(p >> 8)
 	a.Mac[net.IPv4len+1] = uint8(p & 0x00FF)
