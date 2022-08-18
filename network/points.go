@@ -1,6 +1,7 @@
 package network
 
 import (
+	"errors"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
 	"github.com/NubeDev/bacnet/btypes/priority"
@@ -122,22 +123,26 @@ func (device *Device) PointReadBool(pnt *Point) (uint32, error) {
 	return device.toUint32(read), nil
 }
 
-func (device *Device) PointReleaseOverride(pnt *Point) (bool, error) {
-	if !device.isPointWriteable(pnt) {
-		//TODO add errors
+//PointReleasePriority use this when releasing a priority
+func (device *Device) PointReleasePriority(pnt *Point, pri uint8) error {
+	if pnt == nil {
+		return errors.New("invalid point to PointReleasePriority()")
 	}
-	obj := &Object{
-		ObjectID:   pnt.ObjectID,
-		ObjectType: pnt.ObjectType,
-		Prop:       btypes.PropPresentValue,
-		ArrayIndex: bacnet.ArrayAll,
+	if pri > 16 || pri < 1 {
+		return errors.New("invalid priority to PointReleasePriority()")
 	}
-
-	read, err := device.Read(obj)
+	write := &Write{
+		ObjectID:      pnt.ObjectID,
+		ObjectType:    pnt.ObjectType,
+		Prop:          btypes.PropPresentValue,
+		WriteNull:     true,
+		WritePriority: pri,
+	}
+	err := device.Write(write)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return device.toBool(read), nil
+	return nil
 }
 
 /*

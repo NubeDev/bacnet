@@ -3,6 +3,7 @@ package network
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"testing"
 )
 
@@ -51,7 +52,7 @@ func TestRead(t *testing.T) {
 	}
 
 	pnt := &Point{
-		ObjectID:   2,
+		ObjectID:   1,
 		ObjectType: btypes.AnalogOutput,
 	}
 
@@ -80,11 +81,16 @@ func TestReadWrite(t *testing.T) {
 	}
 
 	pnt := &Point{
-		ObjectID:   1,
-		ObjectType: btypes.AnalogValue,
+		ObjectID:         1,
+		ObjectType:       btypes.AnalogOutput,
+		WriteValue:       nil,
+		WriteNull:        false,
+		WritePriority:    15,
+		ReadPresentValue: false,
+		ReadPriority:     false,
 	}
 
-	err = device.PointWriteAnalogue(pnt, 55)
+	err = device.PointWriteAnalogue(pnt, 11)
 	if err != nil {
 		//return
 	}
@@ -95,6 +101,38 @@ func TestReadWrite(t *testing.T) {
 	}
 
 	fmt.Println(readFloat64, err)
+
+}
+
+func TestPointReleasePriority(t *testing.T) {
+
+	localDevice, err := New(&Network{Interface: iface, Port: 47809})
+	if err != nil {
+		fmt.Println("ERR-client", err)
+		return
+	}
+	defer localDevice.NetworkClose()
+	go localDevice.NetworkRun()
+
+	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
+	if err != nil {
+		return
+	}
+
+	pnt := &Point{
+		ObjectID:         1,
+		ObjectType:       btypes.AnalogOutput,
+		WriteValue:       nil,
+		WriteNull:        false,
+		WritePriority:    15,
+		ReadPresentValue: false,
+		ReadPriority:     false,
+	}
+
+	err = device.PointReleasePriority(pnt, 15)
+	if err != nil {
+		//return
+	}
 
 }
 
@@ -115,7 +153,7 @@ func TestReadPri(t *testing.T) {
 
 	pnt := &Point{
 		ObjectID:   1,
-		ObjectType: btypes.BinaryValue,
+		ObjectType: btypes.AnalogOutput,
 	}
 
 	fmt.Println(err)
@@ -123,7 +161,6 @@ func TestReadPri(t *testing.T) {
 	if err != nil {
 		return
 	}
-
-	fmt.Println(readFloat64, err)
+	pprint.PrintJOSN(readFloat64)
 
 }
