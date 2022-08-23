@@ -123,6 +123,25 @@ func (device *Device) PointReadBool(pnt *Point) (uint32, error) {
 	return device.toUint32(read), nil
 }
 
+//PointReadMultiState use this when wanting to read point values for an MI, MV, MO
+func (device *Device) PointReadMultiState(pnt *Point) (uint32, error) {
+	if !device.isPointBool(pnt) {
+
+	}
+	obj := &Object{
+		ObjectID:   pnt.ObjectID,
+		ObjectType: pnt.ObjectType,
+		Prop:       btypes.PropPresentValue,
+		ArrayIndex: bacnet.ArrayAll,
+	}
+
+	read, err := device.Read(obj)
+	if err != nil {
+		return 0, err
+	}
+	return device.toUint32(read), nil
+}
+
 //PointReleasePriority use this when releasing a priority
 func (device *Device) PointReleasePriority(pnt *Point, pri uint8) error {
 	if pnt == nil {
@@ -170,6 +189,25 @@ func (device *Device) PointWriteAnalogue(pnt *Point, value float32) error {
 
 //PointWriteBool use this when wanting to write a new value for an BV, AO
 func (device *Device) PointWriteBool(pnt *Point, value uint32) error {
+	if device.isPointFloat(pnt) {
+
+	}
+	write := &Write{
+		ObjectID:      pnt.ObjectID,
+		ObjectType:    pnt.ObjectType,
+		Prop:          btypes.PropPresentValue,
+		WriteValue:    value,
+		WritePriority: pnt.WritePriority,
+	}
+	err := device.Write(write)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//PointWriteMultiState use this when wanting to write a new value for an MV, MO
+func (device *Device) PointWriteMultiState(pnt *Point, value uint32) error {
 	if device.isPointFloat(pnt) {
 
 	}
