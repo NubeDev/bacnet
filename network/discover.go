@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
 	"github.com/NubeDev/bacnet/btypes"
-	pprint "github.com/NubeDev/bacnet/helpers/print"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -61,12 +60,8 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 		Prop:       btypes.PropObjectName,
 		ArrayIndex: bacnet.ArrayAll,
 	}
-	fmt.Println("GetDeviceDetails()")
-	pprint.PrintJOSN(device)
-	fmt.Println("GetDeviceDetails()")
 	props := []btypes.PropertyType{btypes.PropObjectName, btypes.PropMaxAPDU, btypes.PropVendorName, btypes.PropSegmentationSupported}
-	for i, prop := range props {
-		fmt.Println(i, "Loop Props", prop, " deviceID:", deviceID)
+	for _, prop := range props {
 		obj.Prop = prop
 		read, err := device.Read(obj)
 		if err != nil {
@@ -90,20 +85,13 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 	return resp, nil
 }
 
-func (device *Device) DeviceDiscover() error {
-	options := &bacnet.WhoIsOpts{
-		Low:             0,
-		High:            0,
-		GlobalBroadcast: true,
-		NetworkNumber:   0,
-	}
+func (device *Device) DeviceDiscover(options *bacnet.WhoIsOpts) ([]*Device, error) {
 	whois, err := device.Whois(options)
+	fmt.Println(len(whois))
+	var devices []*Device
 	if err != nil {
-		return err
+		return devices, err
 	}
-	fmt.Println("--------devices------------found device count:", len(whois))
-	pprint.PrintJOSN(whois)
-	fmt.Println("--------devices------------")
 	for _, dev := range whois {
 		if len(dev.Addr.Adr) > 0 {
 			device.MacMSTP = int(dev.Addr.Adr[0])
@@ -111,22 +99,17 @@ func (device *Device) DeviceDiscover() error {
 		host, _ := dev.Addr.UDPAddr()
 		device.DeviceID = int(dev.ID.Instance)
 		device.Ip = host.IP.String()
-		//device.Port = host.Port
 		device.NetworkNumber = int(dev.Addr.Net)
 		device.MaxApdu = dev.MaxApdu
 		device.Segmentation = uint32(dev.Segmentation)
-		fmt.Println("--------device------------", dev.ID.Instance)
-		pprint.PrintJOSN(device)
-		fmt.Println("--------device------------", dev.ID.Instance)
-
 		details, err := device.GetDeviceDetails(dev.ID.Instance)
 		if err != nil {
 			fmt.Println("discover err", err)
 		}
-		fmt.Println("--------device---details---------", dev.ID.Instance)
-		pprint.PrintJOSN(details)
-		fmt.Println("--------device---details---------", dev.ID.Instance)
+		device.DeviceName = details.Name
+		device.VendorName = details.VendorName
+		devices = append(devices, device)
 
 	}
-	return err
+	return devices, err
 }

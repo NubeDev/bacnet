@@ -24,7 +24,7 @@ func TestDiscover(t *testing.T) {
 		return
 	}
 
-	objects, err := device.DeviceObjects(202, true)
+	objects, err := device.DeviceObjects(12, true)
 	if err != nil {
 		return
 	}
@@ -47,7 +47,7 @@ func TestGetPointsList(t *testing.T) {
 		return
 	}
 
-	objects, err := device.GetDevicePoints(202)
+	objects, err := device.GetDevicePoints(12)
 	if err != nil {
 		return
 	}

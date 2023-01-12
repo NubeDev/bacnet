@@ -13,8 +13,8 @@ import (
 
 var iface = "wlp0s20f3"
 var NetworkDevicePort = 47808
-var deviceIP = "192.168.15.202"
-var deviceID = 202
+var deviceIP = "192.168.15.12"
+var deviceID = 12
 var networkNumber = 0
 var macMSTP = 0
 var segmentation = segmentation2.SegmentedBoth

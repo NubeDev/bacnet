@@ -30,6 +30,8 @@ type Device struct {
 	Objects       ObjectMap  `json:"-"`
 	SupportsRPM   bool       `json:"supports_rpm"` //support read prob multiple
 	SupportsWPM   bool       `json:"supports_wpm"` //support read prob multiple
+	DeviceName    string     `json:"device_name"`
+	VendorName    string     `json:"vendor_name"`
 }
 
 /*

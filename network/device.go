@@ -15,6 +15,8 @@ type Device struct {
 	MaxApdu       uint32
 	Segmentation  uint32
 	StoreID       string
+	DeviceName    string
+	VendorName    string
 	dev           btypes.Device
 	network       bacnet.Client
 }
