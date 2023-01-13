@@ -29,7 +29,7 @@ func (c *client) objectListLen(dev btypes.Device) (int, error) {
 
 	data, ok := resp.Object.Properties[0].Data.(uint32)
 	if !ok {
-		return 0, fmt.Errorf("Unable to get object length")
+		return 0, fmt.Errorf("unable to get object length")
 	}
 	return int(data), nil
 }

@@ -30,12 +30,10 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 		HopCount:              btypes.DefaultHopCount,
 	}
 	enc.NPDU(npdu)
-
 	err = enc.ReadProperty(uint8(id), rp)
 	if enc.Error() != nil || err != nil {
 		return btypes.PropertyData{}, err
 	}
-
 	// the value filled doesn't matter. it just needs to be non nil
 	err = fmt.Errorf("go")
 	for count := 0; err != nil && count < retryCount; count++ {
@@ -60,7 +58,6 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 		default:
 			return out, fmt.Errorf("received unknown datatype %T", raw)
 		}
-
 		dec := encoding.NewDecoder(b)
 
 		var apdu btypes.APDU
@@ -71,7 +68,6 @@ func (c *client) ReadProperty(device btypes.Device, rp btypes.PropertyData) (bty
 			err = fmt.Errorf("received error, class: %d, code: %d", apdu.Error.Class, apdu.Error.Code)
 			continue
 		}
-
 		if err = dec.ReadProperty(&out); err != nil {
 			continue
 		}

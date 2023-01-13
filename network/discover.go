@@ -87,7 +87,6 @@ func (device *Device) GetDeviceDetails(deviceID btypes.ObjectInstance) (resp *De
 
 func (device *Device) DeviceDiscover(options *bacnet.WhoIsOpts) ([]*Device, error) {
 	whois, err := device.Whois(options)
-	fmt.Println(len(whois))
 	var devices []*Device
 	if err != nil {
 		return devices, err
@@ -110,6 +109,12 @@ func (device *Device) DeviceDiscover(options *bacnet.WhoIsOpts) ([]*Device, erro
 		device.VendorName = details.VendorName
 		devices = append(devices, device)
 
+	}
+	count := 1
+	for _, d := range devices {
+		fmt.Println("devices found", count)
+		count++
+		fmt.Println(d.VendorName, d.DeviceName, d.Ip)
 	}
 	return devices, err
 }

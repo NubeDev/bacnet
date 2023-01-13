@@ -28,8 +28,6 @@ func (device *Device) DeviceObjects(deviceID btypes.ObjectInstance, checkAPDU bo
 		log.Infoln("bacnet.DeviceObjects() do whois on deviceID:", deviceID, " maxADPU:", device.MaxApdu, " Segmentation:", device.Segmentation)
 	}
 
-	device.GetDeviceDetails(deviceID) //TODO remove this as its just here for testing
-
 	//get object list
 	obj := &Object{
 		ObjectID:   deviceID,

@@ -1,6 +1,7 @@
 package network
 
 import (
+	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
 	log "github.com/sirupsen/logrus"
 )
@@ -31,6 +32,8 @@ func (device *Device) Read(obj *Object) (out btypes.PropertyData, err error) {
 			},
 		},
 	}
+	fmt.Println("DEV", device.dev)
+	fmt.Println("RP", rp)
 	out, err = device.network.ReadProperty(device.dev, rp)
 	if err != nil {
 		if rp.Object.Properties[0].Type == btypes.PropObjectList {

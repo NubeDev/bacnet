@@ -39,12 +39,7 @@ func TestNetwork_DeviceDiscover(t *testing.T) {
 	defer localDevice.NetworkClose()
 	go localDevice.NetworkRun()
 
-	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	devices, err := device.DeviceDiscover(&bacnet.WhoIsOpts{
+	devices, err := localDevice.NetworkDiscover(&bacnet.WhoIsOpts{
 		Low:             0,
 		High:            0,
 		GlobalBroadcast: true,
@@ -54,10 +49,5 @@ func TestNetwork_DeviceDiscover(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	count := 1
-	for _, d := range devices {
-		fmt.Println("devices found", count)
-		count++
-		fmt.Println(d.DeviceName, d.Ip)
-	}
+	fmt.Println(devices)
 }

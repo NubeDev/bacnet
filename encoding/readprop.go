@@ -79,7 +79,7 @@ func (e *Encoder) ReadPropertyAck(invokeID uint8, data btypes.PropertyData) erro
 func (d *Decoder) ReadProperty(data *btypes.PropertyData) error {
 	// Must have at least 7 bytes
 	if d.buff.Len() < 7 {
-		return fmt.Errorf("Missing parameters")
+		return fmt.Errorf("missing parameters")
 	}
 
 	// Tag 0: Object ID
@@ -94,7 +94,7 @@ func (d *Decoder) ReadProperty(data *btypes.PropertyData) error {
 	var objectType btypes.ObjectType
 	var instance btypes.ObjectInstance
 	if !meta.isContextSpecific() {
-		return fmt.Errorf("Tag %d should be context specific. %x", tag, meta)
+		return fmt.Errorf("tag %d should be context specific. %x", tag, meta)
 	}
 	objectType, instance = d.objectId()
 	data.Object.ID.Type = objectType

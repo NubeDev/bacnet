@@ -34,8 +34,8 @@ func main(cmd *cobra.Command, args []string) {
 	go client.NetworkRun()
 
 	if runDiscover {
-		device, err := network.NewDevice(client, &network.Device{Ip: deviceIP, Port: Port})
-		err = device.DeviceDiscover()
+		//device, err := network.NewDevice(client, &network.Device{Ip: deviceIP, Port: Port})
+		//err = device.DeviceDiscover()
 		fmt.Println(err)
 		return
 	}
