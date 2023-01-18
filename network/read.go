@@ -16,7 +16,6 @@ func (device *Device) Read(obj *Object) (out btypes.PropertyData, err error) {
 	if obj == nil {
 		return out, ObjectNil
 	}
-	//get object list
 	rp := btypes.PropertyData{
 		Object: btypes.Object{
 			ID: btypes.ObjectID{
