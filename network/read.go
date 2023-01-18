@@ -1,7 +1,6 @@
 package network
 
 import (
-	"fmt"
 	"github.com/NubeDev/bacnet/btypes"
 	log "github.com/sirupsen/logrus"
 )
