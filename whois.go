@@ -77,29 +77,37 @@ func (c *client) WhoIs(wh *WhoIsOpts) ([]btypes.Device, error) {
 	uniqueList := make([]btypes.Device, len(uniqueMap))
 
 	for _, v := range values {
-
 		r, ok := v.(btypes.IAm)
 		// Skip non I AM responses
 		if !ok {
 			continue
 		}
 		// Check to see if we are in the map before inserting
+		macMSTP := 0
+		if len(r.Addr.Adr) > 0 {
+			macMSTP = int(r.Addr.Adr[0])
+		}
+		networkNumber := 0
+		if r.Addr.Net > 0 {
+			networkNumber = int(r.Addr.Net)
+		}
 		if _, ok := uniqueMap[r.ID.Instance]; !ok {
 			dev := btypes.Device{
-				DeviceID:     int(r.ID.Instance),
-				Addr:         r.Addr,
-				ID:           r.ID,
-				MaxApdu:      r.MaxApdu,
-				Segmentation: r.Segmentation,
-				Vendor:       r.Vendor,
+				DeviceID:      int(r.ID.Instance),
+				Addr:          r.Addr,
+				ID:            r.ID,
+				MaxApdu:       r.MaxApdu,
+				Segmentation:  r.Segmentation,
+				Vendor:        r.Vendor,
+				MacMSTP:       macMSTP,
+				NetworkNumber: networkNumber,
 			}
 			ip, err := r.Addr.UDPAddr()
 			if err == nil {
 				dev.Ip = ip.IP.String()
 				dev.Port = ip.Port
 			}
-
-			uniqueMap[r.ID.Instance] = btypes.Device(dev)
+			uniqueMap[r.ID.Instance] = dev
 			uniqueList = append(uniqueList, dev)
 		}
 	}

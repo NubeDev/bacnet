@@ -3,6 +3,7 @@ package network
 import (
 	"fmt"
 	"github.com/NubeDev/bacnet"
+	pprint "github.com/NubeDev/bacnet/helpers/print"
 	"github.com/kr/pretty"
 	"testing"
 )
@@ -49,5 +50,6 @@ func TestNetwork_DeviceDiscover(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
+	pprint.PrintJOSN(devices)
 	fmt.Println(devices)
 }
