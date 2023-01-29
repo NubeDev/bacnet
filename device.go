@@ -21,6 +21,7 @@ const forwardHeaderLength = 10
 
 type Client interface {
 	io.Closer
+	ClientClose(closeLogs bool) error
 	ClientRun()
 	WhoIs(wh *WhoIsOpts) ([]btypes.Device, error)
 	WhatIsNetworkNumber() []*btypes.Address
@@ -281,13 +282,20 @@ func (c *client) Send(dest btypes.Address, npdu *btypes.NPDU, data []byte, broad
 	return c.dataLink.Send(e.Bytes(), npdu, &dest)
 }
 
+func (c *client) ClientClose(closeLogs bool) error {
+	if closeLogs {
+		if f, ok := c.log.Out.(io.Closer); ok {
+			return f.Close()
+		}
+	}
+	return c.Close()
+}
+
 // Close free resources for the client. Always call this function when using NewClient
 func (c *client) Close() error {
 	if c.dataLink != nil {
 		c.dataLink.Close()
 	}
-	if f, ok := c.log.Out.(io.Closer); ok {
-		return f.Close()
-	}
+
 	return nil
 }

@@ -23,7 +23,7 @@ func NewStore() *Store {
 //UpdateNetwork updated a cached
 func (store *Store) UpdateNetwork(storeID string, net *Network) error {
 	//first close the client
-	net.NetworkClose()
+	net.NetworkClose(false)
 	cb := &bacnet.ClientBuilder{
 		Interface:  net.Interface,
 		Ip:         net.Ip,
@@ -74,30 +74,6 @@ func (store *Store) UpdateDevice(storeID string, net *Network, device *Device) e
 	if BacStore != nil {
 		BacStore.Set(storeID, device, -1)
 	}
-	//var err error
-	//dev := &btypes.Device{
-	//	Ip:            device.Ip,
-	//	DeviceID:      device.DeviceID,
-	//	NetworkNumber: device.NetworkNumber,
-	//	MacMSTP:       device.MacMSTP,
-	//	MaxApdu:       device.MaxApdu,
-	//	Segmentation:  btypes.Enumerated(device.Segmentation),
-	//}
-	//fmt.Println("UPDATE store", storeID)
-	//pprint.Print(device)
-	//dev, err = btypes.NewDevice(dev)
-	//if err != nil {
-	//	return err
-	//}
-	//if dev == nil {
-	//	fmt.Println("dev is nil")
-	//	return err
-	//}
-	//device.network = device.network
-	//device.dev = *dev
-	//if BacStore != nil {
-	//	BacStore.Set(storeID, device, -1)
-	//}
 	return nil
 }
 

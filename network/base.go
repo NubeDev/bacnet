@@ -35,15 +35,16 @@ func New(net *Network) (*Network, error) {
 	return net, nil
 }
 
-func (net *Network) NetworkClose() {
+func (net *Network) NetworkClose(closeLogs bool) error {
 	if net.bacnet != nil {
 		log.Infof("close bacnet network")
-		err := net.bacnet.Close()
+		err := net.bacnet.ClientClose(closeLogs)
 		if err != nil {
 			log.Errorf("close bacnet network err:%s", err.Error())
-			return
+			return err
 		}
 	}
+	return nil
 
 }
 
