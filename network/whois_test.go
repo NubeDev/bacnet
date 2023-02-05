@@ -14,7 +14,7 @@ func TestNetwork_Whois(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	whois, err := localDevice.Whois(&bacnet.WhoIsOpts{
@@ -37,7 +37,7 @@ func TestNetwork_DeviceDiscover(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	devices, err := localDevice.NetworkDiscover(&bacnet.WhoIsOpts{

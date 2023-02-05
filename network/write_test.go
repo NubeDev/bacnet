@@ -12,7 +12,7 @@ func TestDevice_Write(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})

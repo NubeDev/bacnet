@@ -14,7 +14,7 @@ func TestPointDetails(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
@@ -43,7 +43,7 @@ func TestRead(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
@@ -72,7 +72,7 @@ func TestReadWrite(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
@@ -106,12 +106,12 @@ func TestReadWrite(t *testing.T) {
 
 func TestPointReleasePriority(t *testing.T) {
 
-	localDevice, err := New(&Network{Interface: iface, Port: 47809})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
@@ -138,13 +138,12 @@ func TestPointReleasePriority(t *testing.T) {
 
 func TestReadPri(t *testing.T) {
 
-	localDevice, err := New(&Network{Interface: iface, Port: 47809})
+	localDevice, err := New(&Network{Interface: iface, Port: 47808})
 	if err != nil {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
-	go localDevice.NetworkRun()
+	defer localDevice.NetworkClose(false)
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
 	if err != nil {

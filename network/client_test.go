@@ -13,8 +13,8 @@ import (
 
 var iface = "wlp0s20f3"
 var NetworkDevicePort = 47808
-var deviceIP = "192.168.15.12"
-var deviceID = 12
+var deviceIP = "192.168.15.189"
+var deviceID = 1122
 var networkNumber = 0
 var macMSTP = 0
 var segmentation = segmentation2.SegmentedBoth
@@ -44,7 +44,7 @@ func TestWhoIs(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer client.NetworkClose()
+	defer client.NetworkClose(false)
 	go client.NetworkRun()
 
 	wi := &bacnet.WhoIsOpts{
@@ -74,7 +74,7 @@ func TestReadObj(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer NetworkDevice.NetworkClose()
+	defer NetworkDevice.NetworkClose(false)
 	go NetworkDevice.NetworkRun()
 
 	device, err := NewDevice(NetworkDevice, &Device{Ip: deviceIP, DeviceID: deviceID, NetworkNumber: networkNumber, MacMSTP: macMSTP, MaxApdu: MaxApdu, Segmentation: uint32(segmentation)})
@@ -104,7 +104,7 @@ func TestWriteObj(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer NetworkDevice.NetworkClose()
+	defer NetworkDevice.NetworkClose(false)
 	go NetworkDevice.NetworkRun()
 
 	device, err := NewDevice(NetworkDevice, &Device{Ip: deviceIP, DeviceID: deviceID})

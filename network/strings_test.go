@@ -13,7 +13,7 @@ func TestDevice_ReadPointName(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
@@ -38,7 +38,7 @@ func TestDevice_WritePointName(t *testing.T) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer localDevice.NetworkClose()
+	defer localDevice.NetworkClose(false)
 	go localDevice.NetworkRun()
 
 	device, err := NewDevice(localDevice, &Device{Ip: deviceIP, DeviceID: deviceID})
