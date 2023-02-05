@@ -10,39 +10,44 @@ import (
 
 //var memDb *store.Handler
 
-type Store struct{}
-
-var BacStore *store.Handler
+type Store struct {
+	BacStore *store.Handler
+}
 
 func NewStore() *Store {
-	BacStore = store.Init()
-	s := &Store{}
+	s := &Store{
+		BacStore: store.Init(),
+	}
 	return s
 }
 
-//UpdateNetwork updated a cached
-func (store *Store) UpdateNetwork(storeID string, net *Network) error {
-	//first close the client
-	net.NetworkClose(false)
+//NewNetwork updated a cached
+func (store *Store) NewNetwork(storeID, iface, ip string, port, subnet int) error {
 	cb := &bacnet.ClientBuilder{
-		Interface:  net.Interface,
-		Ip:         net.Ip,
-		Port:       net.Port,
-		SubnetCIDR: net.SubnetCIDR,
+		Interface:  iface,
+		Ip:         ip,
+		Port:       port,
+		SubnetCIDR: subnet,
 	}
 	bc, err := bacnet.NewClient(cb)
 	if err != nil {
 		return err
 	}
-	net.bacnet = bc
-	if BacStore != nil {
-		BacStore.Set(storeID, net, -1)
+	bacnetNet := &Network{
+		Interface: iface,
+		Port:      port,
+		bacnet:    bc,
 	}
-	return nil
+	if store.BacStore != nil {
+		store.BacStore.Set(storeID, bacnetNet, -1)
+		return nil
+	} else {
+		return errors.New("new network, failed to set bacnet store, bacnet store is empty")
+	}
 }
 
 func (store *Store) GetNetwork(uuid string) (*Network, error) {
-	cli, ok := BacStore.Get(uuid)
+	cli, ok := store.BacStore.Get(uuid)
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("bacnet: no network found with uuid:%s", uuid))
 	}
@@ -71,14 +76,14 @@ func (store *Store) UpdateDevice(storeID string, net *Network, device *Device) e
 	}
 	device.network = net.bacnet
 	device.dev = *dev
-	if BacStore != nil {
-		BacStore.Set(storeID, device, -1)
+	if store.BacStore != nil {
+		store.BacStore.Set(storeID, device, -1)
 	}
 	return nil
 }
 
 func (store *Store) GetDevice(uuid string) (*Device, error) {
-	cli, ok := BacStore.Get(uuid)
+	cli, ok := store.BacStore.Get(uuid)
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("bacnet: no device found with uuid:%s", uuid))
 	}

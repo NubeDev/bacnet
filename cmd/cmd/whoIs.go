@@ -30,7 +30,7 @@ func main(cmd *cobra.Command, args []string) {
 		fmt.Println("ERR-client", err)
 		return
 	}
-	defer client.NetworkClose()
+	defer client.NetworkClose(false)
 	go client.NetworkRun()
 
 	if runDiscover {

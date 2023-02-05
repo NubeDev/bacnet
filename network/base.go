@@ -1,6 +1,7 @@
 package network
 
 import (
+	"errors"
 	"github.com/NubeDev/bacnet"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,6 +13,7 @@ type Network struct {
 	SubnetCIDR int
 	StoreID    string
 	bacnet     bacnet.Client
+	Store      *Store
 }
 
 // New returns a new instance of bacnet network
@@ -22,15 +24,15 @@ func New(net *Network) (*Network, error) {
 		Port:       net.Port,
 		SubnetCIDR: net.SubnetCIDR,
 	}
-
 	bc, err := bacnet.NewClient(cb)
 	if err != nil {
 		return nil, err
 	}
-
 	net.bacnet = bc
-	if BacStore != nil {
-		BacStore.Set(net.StoreID, net, -1)
+	if net.Store.BacStore != nil {
+		net.Store.BacStore.Set(net.StoreID, net, -1)
+	} else {
+		return nil, errors.New("failed to set bacnet store, bacnet store is empty")
 	}
 	return net, nil
 }
