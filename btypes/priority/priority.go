@@ -19,8 +19,9 @@ func BuildFloat32(in btypes.PropertyData, objType btypes.ObjectType) (pri *Float
 				flt := float32(f)
 				returnValue = nils.NewFloat32(flt)
 			} else {
-				f := value.(float32)
-				returnValue = nils.NewFloat32(f)
+				f := value.(uint32)
+				flt := float32(f)
+				returnValue = nils.NewFloat32(flt)
 			}
 		}
 		switch i {
