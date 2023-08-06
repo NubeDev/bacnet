@@ -89,7 +89,7 @@ func NewClient(cb *ClientBuilder) (Client, error) {
 		if !ok {
 
 		}
-		dataLink, err = datalink.NewUDPDataLinkFromIP(ip, port, sub)
+		dataLink, err = datalink.NewUDPDataLinkFromIP(ip, sub, port)
 		if err != nil {
 			//log.Fatal(err)
 		}
